@@ -5,6 +5,7 @@
 #ifndef B11_KNNSERVER_H
 #define B11_KNNSERVER_H
 #include "KnnDB.h"
+#include "Command.h"
 /*
  * header for the server class
  */
@@ -19,6 +20,7 @@ private:
     std::string readMessage();
     int getMClient() const;
     void setMClient(int mClient);
+    **Command cmd;
 public:
     explicit KnnServer(KnnDB *mKnnDbp);
     virtual ~KnnServer();
@@ -28,6 +30,8 @@ public:
     void setSockNum(int sockNum);
     KnnDB *getMKnnDbp() const;
     void setMKnnDbp(KnnDB *mKnnDbp);
+    Command** getCmd();
+    void setCmd(Command**);
     int bindServer();
     int closeServer();
     int listenToNewConnections();
