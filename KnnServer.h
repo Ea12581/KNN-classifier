@@ -35,6 +35,7 @@ public:
     int bindServer();
     int closeServer();
     int listenToNewConnections();
+    std::string sendMenu();
 
 };
 
