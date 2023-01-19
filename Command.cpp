@@ -1,11 +1,5 @@
 #include "Command.h"
-   
-   
-Command::Command(string _desc, DefaultIO _dio) {
-    desc = _desc;
-    dio = _dio;
-}
-
+      
 void Command::setDesc(string _desc) {
     desc = desc;
 }
