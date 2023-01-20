@@ -1,16 +1,5 @@
 #include "Command.h"
- 
-/*
-* Func name: Command
-* Input: string _desc (command description), DefaultIO _dio (The IO object)
-* Output: None
-* Function operation: A constructor for the Command object (shouldn't be used
-* as the class should be abstract)
-*/  
-Command::Command(string _desc, DefaultIO _dio) {
-    desc = _desc;
-    dio = _dio;
-}
+
 
 /*
 * Func name: setDesc
