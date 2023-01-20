@@ -1,5 +1,5 @@
 #include "Command.h"
-   
+ 
 /*
 * Func name: Command
 * Input: string _desc (command description), DefaultIO _dio (The IO object)
@@ -17,7 +17,7 @@ Command::Command(string _desc, DefaultIO _dio) {
 * Input: string _desc (command description)
 * Output: None
 * Function operation: A setter for the description
-*/  
+*/ 
 void Command::setDesc(string _desc) {
     desc = desc;
 }

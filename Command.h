@@ -10,13 +10,11 @@ private:
     DefaultIO dio;
 
 public:
-
-    Command(string _desc, DefaultIO _dio);
     void setDesc(string _desc);
     void setDio(DefaultIO _dio);
     string getDesc();
     DefaultIO getDio();
-    void execute(); 
+    void virtual execute() = 0; 
 };
 
 #endif;
