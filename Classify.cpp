@@ -50,9 +50,10 @@ void Classify::setVectors(vector <VectorCalDis>* _vectors) {
 
 void Classify::execute() {
     if (path == "\0") {
-        cout << "data upload please.\n";
+        cout << "please upload data\n";
     } else {
         KnnDB data = KnnDB(path, k, metric);
         data.classifyPairs(vectors);
+        cout << "classifying data complete\n";
     }
 }
