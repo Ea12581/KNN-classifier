@@ -258,6 +258,13 @@ string KnnDB::mostPrevalentCls(vector<pair<string, double>> closest) {
     return resultStr;
 }
 
+void KnnDB::classifyPaiis(vector<pair<VectorCalDis, string>>& pairs) {
+    for (int i = 0; i < pairs.size(); i++) {
+        vector<pair<string, double>> tempPair = KnnDB::findKnn(pairs[i].first);
+        pairs[i].second = KnnDB::mostPrevalentCls(tempPair);
+    }
+}
+
 /*
 * Func name: partialBubbleSort
 * Input: vector<pair<string, double>> &v (a ref to vector of pairs), int k

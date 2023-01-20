@@ -13,7 +13,7 @@ private:
 public:
     Settings(string _desc, DefaultIO _dio);
     int getK();
-    string getmetirc();
+    string getMetirc();
     void setK(int);
     void setMetric(string);
     virtual void execute();

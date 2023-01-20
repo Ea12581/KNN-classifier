@@ -16,7 +16,7 @@ int Settings::getK() {
     return k;
 }
 
-string Settings::getmetirc() {
+string Settings::getMetirc() {
     return metric;
 }
 
@@ -33,7 +33,7 @@ void Settings::execute() {
     cin >> input;
     if (input == "\n") {
         string kMet = to_string(getK());
-        kMet.append(getmetirc());
+        kMet.append(getMetirc());
     } else {
         int firstSpace = input.find(" ");
         char* k;
