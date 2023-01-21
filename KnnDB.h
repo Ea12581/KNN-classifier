@@ -49,6 +49,7 @@ public:
     // sorts the vector so that the k "smallest" classes will be in the first k indexes.
     void partialBubbleSortCls(vector<pair<string, double>> &v, int k);
     // sorts the vector so that the k shortest distances will be in the first k indexes.
-    void partialBubbleSortDis(vector<pair<string, double>> &v, int k);     
+    void partialBubbleSortDis(vector<pair<string, double>> &v, int k);
+    void classifyPairs(vector<pair<VectorCalDis, string>>&);
 };
 #endif

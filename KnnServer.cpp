@@ -304,7 +304,7 @@ void KnnServer::setMClient(int mClient) {
  * safe closing the server. return 1 if succeed, -1 if not
  * @return 1 for success, -1 else
  */
-int KnnServer :: closeServer(){
+int KnnServer :: closeServer() {
     // stop the server socket from sending or receiving
     int flag = shutdown(m_sockNum, SHUT_RDWR);
     if(flag < 0){
@@ -319,4 +319,16 @@ int KnnServer :: closeServer(){
         return flag;
     }
     return 0;
+}
+
+string KnnServer :: sendMenu() {
+    string menu = "Welcome to the KNN Classifier Server. Please choose an option:\n"
+    for (int i = 0, i < (*cmd).size(); i++) {
+        menu.append(std::to_string(i+1));
+        menu.append(" ");
+        menu.append((*cmd)[i].desc);
+        menu.append("\n");
+    }
+    menu.append("8. exit\n");
+    return menu;
 }
