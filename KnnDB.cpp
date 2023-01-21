@@ -258,7 +258,13 @@ string KnnDB::mostPrevalentCls(vector<pair<string, double>> closest) {
     return resultStr;
 }
 
-void KnnDB::classifyPaiis(vector<pair<VectorCalDis, string>>& pairs) {
+/*
+* Func name: classifyPairs
+* Input: vector<pair<VectorCalDis, string>>& pairs (list of vectors with no classification)
+* Output: None
+* Function operation: Loops over the vector of pairs and classify them.
+*/
+void KnnDB::classifyPairs(vector<pair<VectorCalDis, string>>& pairs) {
     for (int i = 0; i < pairs.size(); i++) {
         vector<pair<string, double>> tempPair = KnnDB::findKnn(pairs[i].first);
         pairs[i].second = KnnDB::mostPrevalentCls(tempPair);

@@ -11,7 +11,7 @@ private:
     vector<string> clsifics;
 
 public:
-    Display(vector<string>);
+    Display(vector<string>, string, DefaultIO);
     vector<string> getClsifics();
     void setClsifics(vector<string>);
     virtual void execute();

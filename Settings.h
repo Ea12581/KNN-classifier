@@ -9,15 +9,17 @@ class Settings : protected Command {
 private:
     int k;
     string metric;
+    string userInput;
 
 public:
-    Settings(string _desc, DefaultIO _dio);
+    Settings(string _desc, DefaultIO _dio, string userInput);
     int getK();
-    string getMetirc();
+    string getMetric();
+    string getInput();
     void setK(int);
     void setMetric(string);
+    void setInput(string);
     virtual void execute();
 };
-
 
 #endif

@@ -1,16 +1,39 @@
 #include <iostream>
 #include "Display.h"
 
-Display::Display(vector<string> clsifics) {
+/*
+* A consturctor with a vector of classifications as strings.
+* the command descreption and the IO object.
+*/
+Display::Display(vector<string> clsifics, string _desc, DefaultIO _dio) {
     setClsifics(clsifics);
+    setDesc(_desc);
+    setDio(_dio);
 }
 
+/*
+* A getter for the classifications.
+*/
 vector<string> Display::getClsifics() {
     return clsifics;
 }
+
+/*
+* A setter for the classifications.
+*/
 void Display::setClsifics(vector<string> _clsifics) {
     clsifics = _clsifics;
 }
+
+/*
+* Func name: execute
+* Input: none
+* Output: none
+* Function operation: if classification vector is of size 0,
+* asks for data to be uploaded. if the first classification is empty,
+* asks for the data to be classified. else, creates a string with the
+* list of classifications.
+*/
 void Display::execute() {
     if (clsifics.size() == 0) {
         cout << "please upload data" << endl;

@@ -12,7 +12,7 @@ private:
     string path;
 
 public:
-    Download(vector<string>, string);
+    Download(vector<string>, string, string, DefaultIO);
     string getPath();
     void setPath(string);
     vector<string> getClsifics();
