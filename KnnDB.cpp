@@ -330,5 +330,29 @@ double KnnDB::cmpByDistance(const pair<string, double> p1, const pair<string, do
 double KnnDB::cmpByClass(const pair<string, double> p1, const pair<string, double> p2) {
     return p1.first.compare(p2.first);
 }
+
+/**
+ * create db of Knn vectors from ValCalDis vectors by classify every one of them and collect to new db
+ * @param db of the ValCalDis vectors
+ * @param metric by to calculate the distances
+ * @param k neighbors knn vectors
+ * @return Knn db of vectors
+ */
+vector<KnnVec> KnnDB::createDBFromValCalDis(vector<VectorCalDis> db) {
+    vector<KnnVec> knnVectors;
+    for(auto v : db){
+        knnVectors.push_back(KnnVec::convertToKnn(findClassification(v),v));
+    }
+    return knnVectors;
+}
+/**
+ * find the classification of an input ValCalVec vector
+ * @param v ValCalVec vector
+ * @return string, the classification
+ */
+string KnnDB::findClassification(VectorCalDis v) {
+    vector<pair<string, double>> knnPairs = findKnn(v);
+    return mostPrevalentCls(knnPairs);
+}
     
         

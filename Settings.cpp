@@ -5,58 +5,34 @@
 #define DEFAULT_METRIC "EUC"
 
 
-/*
-* A consturctor command descreption and the IO object.
-*/
-Settings::Settings(string _desc, DefaultIO _dio, string _input) {
-    setDesc(_desc);
-    setDio(_dio);
-    setInput(_input);
-    setK(DEFAULT_K);
-    setMetric(DEFAULT_METRIC);
 
-}
 
 /*
 * A getter for the k value.
 */
 int Settings::getK() {
-    return k;
+    return getSd()->getK();
 }
 
 /*
 * A getter for the metric.
 */
 string Settings::getMetric() {
-    return metric;
+    return getSd()->getMetric();
 }
 
 /*
 * A setter for the k value.
 */
 void Settings::setK(int _k) {
-    k = _k;
+    getSd()->setK(_k);
 }
 
 /*
 * A setter for the metric.
 */   
 void Settings::setMetric(string _metric) {
-    metric = _metric;
-}
-
-/*
-* A setter for the input.
-*/   
-void Settings::setInput(string _input) {
-    userInput = _input;
-}
-
-/*
-* A getter for the input.
-*/
-string Settings::getInput() {
-    return userInput;
+    getSd()->setMetric(_metric);
 }
 
 /*
@@ -68,24 +44,29 @@ string Settings::getInput() {
 * metric, if not - prints messages describing what part of the string was illegal.
 */
 void Settings::execute() {
-    if (userInput == "\n") {
-        string kMet = to_string(getK());
-        kMet.append(getMetric());
+    string input = getDio().read();
+    string output;
+    if (input == "\n") {
+        output = "The current KNN parameters are: K = ";
+        output.append(to_string(getK()));
+        output.append(", distance metric = ");
+        output.append(getMetric());
+        output.append("\n");
     } else {
-        int firstSpace = userInput.find(" ");
+        int firstSpace = input.find(" ");
         char* k;
         char* metric;
-        strncpy(k, userInput.c_str(), firstSpace);
-        strcpy(metric, &userInput[firstSpace + 1]);
+        strncpy(k, input.c_str(), firstSpace);
+        strcpy(metric, &input[firstSpace + 1]);
         bool isKLegal = false;
         if (!isNumber(k)) {
-            cout << "invalid value for K\n";
+            output = "invalid value for K\n";
         } else {
             isKLegal = true;
         }
         if ((metric != "AUC") && (metric != "MAN") && (metric != "CHB") && (metric != "CAN") &&
             (metric != "MIN")) {
-            cout << "invalid value for metric\n";
+            output = "invalid value for metric\n";
         } else {
             if (isKLegal) {
                 setK(stoi(k));
@@ -93,4 +74,5 @@ void Settings::execute() {
             }
         }
     }
+    getDio().write(output);
 }

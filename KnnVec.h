@@ -26,6 +26,8 @@ class KnnVec : public VectorCalDis{
         KnnVec static createFromStr(std :: string newVec);
         // Brief check to determine that the string contains only numeric chars
         bool static is_number(const std::string& s);
-        // compares paris by their second value.
+        // Create vector from classification and VecCalDis
+        KnnVec static convertToKnn(std :: string clas, VectorCalDis v);
+        
 };
 #endif
