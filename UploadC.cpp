@@ -63,7 +63,7 @@ if(uploadTrain(path)){
         return;
     }
     //if the upload of the test file hasn't succeeded, set the other file as nullPtr to wipe it from the shared data
-    delete this->getSd()->getKnnDb();
+    this->getSd()->freeTestSafely();
 }
 }
 
