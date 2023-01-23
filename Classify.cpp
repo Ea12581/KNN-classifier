@@ -59,7 +59,9 @@ void Classify::execute() {
         output = "please upload data\n";
     } else {
         KnnDB temp;
-        getSd()->setClassified(&temp.createDBFromValCalDis(*(getSd()->getUnClassified())));
+        vector<KnnVec> *tempVec = new vector<KnnVec>;
+        *tempVec = temp.createDBFromValCalDis(*(getSd()->getUnClassified())); 
+        getSd()->setClassified(tempVec);
         output = "classifying data complete\n";
     }
     getDio().write(output);

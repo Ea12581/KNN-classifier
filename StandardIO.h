@@ -5,6 +5,11 @@
 
 
 using namespace std;
-class StandardIO : protected DefaultIO {}
+class StandardIO : public DefaultIO {
+public:
+    string read();
+    void write(string);
+
+};
 
 #endif

@@ -5,7 +5,7 @@
 
 
 using namespace std;
-class Settings : protected Command {
+class Settings : public Command {
 public:
     Settings(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
     int getK();

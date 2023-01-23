@@ -6,7 +6,7 @@
 
 
 using namespace std;
-class Classify : protected Command {
+class Classify : public Command {
 public:
     Classify(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};    
     int getK();

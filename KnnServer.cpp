@@ -322,11 +322,12 @@ int KnnServer :: closeServer() {
 }
 
 string KnnServer :: sendMenu() {
-    string menu = "Welcome to the KNN Classifier Server. Please choose an option:\n"
-    for (int i = 0, i < (*cmd).size(); i++) {
+    string menu = "Welcome to the KNN Classifier Server. Please choose an option:\n";
+    int cmd_size = sizeof(cmd)/sizeof(cmd[0]);
+    for (int i = 0; i < cmd_size; i++) {
         menu.append(std::to_string(i+1));
         menu.append(" ");
-        menu.append((*cmd)[i].desc);
+        menu.append((*cmd)[i].getDesc());
         menu.append("\n");
     }
     menu.append("8. exit\n");

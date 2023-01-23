@@ -29,6 +29,7 @@ public:
     static vector <KnnVec>* createDB(std :: string dirToFile);
     KnnDB(std :: string dbFile, int k, std :: string metric);
     KnnDB(std :: string dbFile);
+    KnnDB(vector <KnnVec> DB);
     KnnDB();
     void setDB(vector<KnnVec>);
     vector<KnnVec> getDB();

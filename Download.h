@@ -6,7 +6,7 @@
 
 
 using namespace std;
-class Download : protected Command {
+class Download : public Command {
 public:
     Download(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
     virtual void execute();

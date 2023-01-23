@@ -26,6 +26,16 @@ KnnDB::KnnDB(string dbFile, int k, string metric){
     createMap();
 };
 
+/**
+ * constructor with only vectors
+ * @param DB
+ */
+KnnDB::KnnDB(vector<KnnVec> DB) {
+    this->m_DB = std::move(DB);
+    this->m_metricType = "none";
+    this->m_k = 0;
+}
+
 /*
 * Func name: createDB
 * Input: string dirToFile, string with path to a cvs file which contains the vectors

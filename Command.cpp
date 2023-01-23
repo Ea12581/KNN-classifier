@@ -140,6 +140,7 @@ bool ShareData::setK(int k) {
     if(m_knnDB == nullptr)
         return false;
     this->m_knnDB->setK(k);
+    return true;
 }
 
 /**
@@ -152,6 +153,7 @@ bool ShareData::setMetric(string metric) {
     if(m_knnDB == nullptr)
         return false;
     this->m_knnDB->setMetric(metric);
+    return true;
 }
 
 /**

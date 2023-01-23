@@ -6,7 +6,7 @@
 
 
 using namespace std;
-class Display : protected Command {
+class Display : public Command {
 public:
     Display(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
     virtual void execute();

@@ -20,7 +20,7 @@ private:
     std::string readMessage();
     int getMClient() const;
     void setMClient(int mClient);
-    **Command cmd;
+    Command** cmd;
 public:
     explicit KnnServer(KnnDB *mKnnDbp);
     virtual ~KnnServer();
