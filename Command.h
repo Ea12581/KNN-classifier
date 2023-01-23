@@ -57,6 +57,9 @@ public:
 
     virtual ~ShareData();
 
+    void freeSafly();
+
+    void freeTestSafely();
 };
 
 /**

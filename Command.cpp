@@ -172,6 +172,14 @@ string ShareData::getMetric() {
     return this->m_knnDB->getMetric();
 }
 
+/**
+ * free safely the KnnDB
+ */
+void ShareData::freeTestSafely() {
+    delete this->m_knnDB;
+    this->m_knnDB = nullptr;
+}
+
 /*
  * constructor with description and dio arguments
  */
