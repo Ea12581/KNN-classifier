@@ -6,17 +6,9 @@
 
 
 using namespace std;
-class Download : protected Command {
-private:
-    vector<string> clsifics;
-    string path;
-
+class Download : public Command {
 public:
-    Download(vector<string>, string, string, DefaultIO);
-    string getPath();
-    void setPath(string);
-    vector<string> getClsifics();
-    void setClsifics(vector<string>);
+    Download(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
     virtual void execute();
 };
 

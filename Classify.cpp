@@ -1,19 +1,9 @@
 #include <iostream>
 #include "Classify.h"
 #include "KnnDB.h"
+#define DEFAULT_K 5
+#define DEFAULT_METRIC "EUC"
 
-
-/*
-* A consturctor with decription, path, pointer to a vector of special vectors, an int and a metric to for the classification
-*/
-Classify::Classify(string _desc, DefaultIO _dio, string _path, vector <VectorCalDis>* _vectors, int _k, string _metric) {
-        setDesc(_desc);
-        setDio(_dio);
-        setPath(_path);
-        setVectors(_vectors);
-        setK(_k);
-        setMetric(_metric);
-}
 
 /*
 * Func name: getK
@@ -22,7 +12,7 @@ Classify::Classify(string _desc, DefaultIO _dio, string _path, vector <VectorCal
 * Function operation: A getter for number to calc the knn with
 */ 
 int Classify::getK() {
-    return k;
+    return getSd()->getK();
 }
 
 /*
@@ -32,7 +22,7 @@ int Classify::getK() {
 * Function operation: a getter for the metric
 */ 
 string Classify::getMetirc() {
-    return metric;
+    return getSd()->getMetric();
 }
 
 /*
@@ -42,7 +32,7 @@ string Classify::getMetirc() {
 * Function operation: A setter for number to calc the knn with
 */ 
 void Classify::setK(int _k) {
-    k = _k;
+    getSd()->setK(_k);
 }
 
 /*
@@ -52,54 +42,7 @@ void Classify::setK(int _k) {
 * Function operation: A getter for metric
 */     
 void Classify::setMetric(string _metric) {
-    metric = _metric;
-}
-
-/*
-* Func name: getPath
-* Input: None
-* Output: string (the path of the file with classified vectors)
-* Function operation: A getter for the path
-*/ 
-string Classify::getPath() {
-    return path;
-}
-
-/*
-* Func name: setPath
-* Input: string _path (the path of the file with classified vectors)
-* Output: None
-* Function operation: A setter for the path
-*/
-void Classify::setPath(string _path) {
-    path = _path;
-}
-
-/*
-* Func name: getVectors
-* Input: None
-* Output: vector<pair <VectorCalDis, string>>* (a pointer to the vector
-* of pairs holding vectors and their classifications).
-* Function operation: A getter for the vector of pairs.
-*/
-vector<pair <VectorCalDis, string>>* Classify::getVectors() {
-    return &vectors;
-}
-
-/*
-* Func name: setVectors
-* Input: vector _vectors <VectorCalDis>* (a pointer to a vector of vectors)
-* Output: none
-* Function operation: sets vectors without a classification.
-*/
-void Classify::setVectors(vector <VectorCalDis>* _vectors) {
-    for (int i = 0; i < _vectors->size(); i++) {
-        pair <VectorCalDis, string> vector;
-        vector.first = _vectors->at(i);
-        vector.second = "";
-        vectors.push_back(vector);
-    }
-
+    getSd()->setMetric(_metric);
 }
 
 /*
@@ -111,11 +54,15 @@ void Classify::setVectors(vector <VectorCalDis>* _vectors) {
 * to the k, the metric and the data in the file provided.
 */
 void Classify::execute() {
-    if (path == "\0") {
-        cout << "please upload data\n";
+    string output;
+    if (getSd()->getUnClassified() == nullptr) {
+        output = "please upload data\n";
     } else {
-        KnnDB data = KnnDB(path, k, metric);
-        data.classifyPairs(vectors);
-        cout << "classifying data complete\n";
+        KnnDB temp;
+        vector<KnnVec> *tempVec = new vector<KnnVec>;
+        *tempVec = temp.createDBFromValCalDis(*(getSd()->getUnClassified())); 
+        getSd()->setClassified(tempVec);
+        output = "classifying data complete\n";
     }
+    getDio().write(output);
 }

@@ -3,45 +3,6 @@
 #include "Download.h"
 
 /*
-* A consturctor with a vector of classifications as strings,
-* and a path. the command descreption and the IO object.
-*/
-Download::Download(vector<string> clsifics, string path, string _desc, DefaultIO _dio) {
-    setClsifics(clsifics);
-    setPath(path);
-    setDesc(_desc);
-    setDio(_dio);
-}
-
-/*
-* A getter for the classifications.
-*/
-vector<string> Download::getClsifics() {
-    return clsifics;
-}
-
-/*
-* A setter for the classifications.
-*/
-void Download::setClsifics(vector<string> _clsifics) {
-    clsifics = _clsifics;
-}
-
-/*
-* A getter for the path.
-*/
-string Download::getPath() {
-    return path;
-}
-
-/*
-* A setter for the path.
-*/
-void Download::setPath(string _path) {
-    path = _path;
-}
-
-/*
 * Func name: execute
 * Input: none
 * Output: none
@@ -52,28 +13,30 @@ void Download::setPath(string _path) {
 * of classifications.
 */
 void Download::execute() {
-    string list = "";
-    std::ofstream file(path);
-    if (clsifics.size() == 0) {
-        cout << "please upload data" << endl;
-    } else if (clsifics[0] == "") {
-        cout << "please classify the data" << endl;
-    } else if (!file) {
-        cout << "couldn't create the file!" << endl;
-    } else if (file) {
-        for (int i = 1; i <= clsifics.size(); i++) {
-            string index = to_string(i);
-            list.append(index);
-            list.append(" ");
-            list.append(clsifics[i]);
-            list.append("\n");
-        }
-        list.append("Done.\n");
-        file << list;
-    }
-    if (!file) {
-        cout << "couldn't create the file!" << endl;
+    //string path = getDio().read();
+    //std::ofstream file(path);
+    string output;
+    if (!getSd()->isUnClaExists()) {
+        output = "please upload data\n";
+    } else if (!getSd()->isClassifiedExists()) {
+        output = "please classify the data\n";
+    /*} else if (!file) {
+        output = "couldn't create the file!\n";
+    } else if (file) {*/
     } else {
-        file << list;
+        for (int i = 1; i <= getSd()->getClassified()->size(); i++) {
+            string index = to_string(i);
+            output.append(index);
+            output.append(" ");
+            output.append((*(getSd()->getClassified())).at(i).getClassification());
+            output.append("\n");
+        }
+        //file << output;
     }
+    getDio().write(output);
+    /*if (!file) {
+        output = "couldn't create the file!\n";
+    } else {
+        file << output;
+    }/*/
 }

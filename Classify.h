@@ -6,23 +6,13 @@
 
 
 using namespace std;
-class Classify : protected Command {
-private:
-    string path;
-    vector<pair <VectorCalDis, string>> vectors;
-    int k;
-    string metric;
-
+class Classify : public Command {
 public:
-    Classify(string _desc, DefaultIO _dio, string path, vector <VectorCalDis>* _vectors, int k, string metric);
+    Classify(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};    
     int getK();
     string getMetirc();
     void setK(int);
     void setMetric(string);
-    string getPath();
-    void setPath(string);
-    vector<pair <VectorCalDis, string>>* getVectors();
-    void setVectors(vector <VectorCalDis>*);
     virtual void execute();
 };
 

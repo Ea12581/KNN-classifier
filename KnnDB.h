@@ -29,6 +29,7 @@ public:
     static vector <KnnVec>* createDB(std :: string dirToFile);
     KnnDB(std :: string dbFile, int k, std :: string metric);
     KnnDB(std :: string dbFile);
+    KnnDB(vector <KnnVec> DB);
     KnnDB();
     void setDB(vector<KnnVec>);
     vector<KnnVec> getDB();
@@ -51,5 +52,9 @@ public:
     // sorts the vector so that the k shortest distances will be in the first k indexes.
     void partialBubbleSortDis(vector<pair<string, double>> &v, int k);
     void classifyPairs(vector<pair<VectorCalDis, string>>&);
+    //create Knn DB from VakDisCal DB
+    vector<KnnVec> createDBFromValCalDis(vector<VectorCalDis> db);
+    //find the classification of ValCalVector
+    string findClassification(VectorCalDis v);
 };
 #endif

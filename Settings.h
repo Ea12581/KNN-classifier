@@ -5,14 +5,9 @@
 
 
 using namespace std;
-class Settings : protected Command {
-private:
-    int k;
-    string metric;
-    string userInput;
-
+class Settings : public Command {
 public:
-    Settings(string _desc, DefaultIO _dio, string userInput);
+    Settings(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
     int getK();
     string getMetric();
     string getInput();
