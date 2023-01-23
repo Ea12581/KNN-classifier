@@ -2,30 +2,6 @@
 #include "Display.h"
 
 /*
-* A consturctor with a vector of classifications as strings.
-* the command descreption and the IO object.
-*/
-Display::Display(vector<string> clsifics, string _desc, DefaultIO _dio) {
-    setClsifics(clsifics);
-    setDesc(_desc);
-    setDio(_dio);
-}
-
-/*
-* A getter for the classifications.
-*/
-vector<string> Display::getClsifics() {
-    return clsifics;
-}
-
-/*
-* A setter for the classifications.
-*/
-void Display::setClsifics(vector<string> _clsifics) {
-    clsifics = _clsifics;
-}
-
-/*
 * Func name: execute
 * Input: none
 * Output: none
@@ -35,20 +11,21 @@ void Display::setClsifics(vector<string> _clsifics) {
 * list of classifications.
 */
 void Display::execute() {
-    if (clsifics.size() == 0) {
-        cout << "please upload data" << endl;
-    } else if (clsifics[0] == "") {
-        cout << "please classify the data" << endl;
+    string output;
+    if (!getSd()->isUnClaExists()) {
+        output = "please upload data\n";
+    } else if (!getSd()->isClassifiedExists()) {
+        output = "please classify the data\n";
     } else {
-        string list = "";
-        for (int i = 1; i <= clsifics.size(); i++) {
+        for (int i = 1; i <= getSd()->getClassified()->size(); i++) {
             string index = to_string(i);
-            list.append(index);
-            list.append(" ");
-            list.append(clsifics[i]);
-            list.append("\n");
+            output.append(index);
+            output.append(" ");
+            output.append((*(getSd()->getClassified())).at(i).getClassification());
+            output.append("\n");
         }
-        list.append("Done.\n");
+        output.append("Done.\n");
     }
+    getDio().write(output);
 }
 

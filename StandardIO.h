@@ -1,11 +1,12 @@
-#ifndef DIO_H
-#define DIO_H
+#ifndef STDIO_H
+#define STDIO_H
 #include <string>
+#include "DefaultIO.h"
+
 
 using namespace std;
-class DefaultIO {
+class StandardIO : public DefaultIO {
 public:
-
     string read();
     void write(string);
 

@@ -1,8 +1,12 @@
+#include <utility>
 #include <vector>
-#include <math.h>
+#include <algorithm>
 #include <cmath>
 #include <string>
 #include <limits>
+#include <fstream>
+#include <sstream>
+#include <regex>
 #include "VectorCalDis.h"
 
 using namespace std;
@@ -46,80 +50,80 @@ using namespace std;
     * with the values of the string.
     */
     VectorCalDis VectorCalDis::vectorFromString(string &line) {
-    int countBeforePoint = 0;
-    int flag = 0;
-    int i = 0;
-    // Will be returned for illegal strings.
-    VectorCalDis emptyV;
-    VectorCalDis v;
-    // Goes over the string.
-    while (i < line.size()) {
-    // skips spaces
-    if (line[i] == ' ') {
-        i++;
-        continue;
-    } else {
-        // only allows digits, '.' or '-'.
-        if(isdigit(line[i]) || line[i] == '-' || line[i] == '.') {
-            int j = i;
-            // goes over a potential double value.
-            while (line[j] != ' ' && j < line.size()) {
-                if (isdigit(line[j])) {
-                    if (flag == 0) {
-                    // counts digits before the decimal point.
-                    countBeforePoint++;
-                    }
-                    j++;
-                    // May overflow, avoids it.
-                    if (countBeforePoint > 307) {
-                        return emptyV;
-                    }
-                } else {
-
-                    /*
-                    * '-' can only be as:
-                    * The first char and have a digit or a '.' after it.
-                    * A char after a space and have a digit or a '.' after it.
-                    */ 
-                    if (line[j] == '-' && ((j == 0) || (line[j - 1] == ' ')) &&
-                        (isdigit(line[j + 1]) || (line[j + 1] == '.' ))) {
-                        j++;
-                    } else {
-                        /*
-                        * '.' can only be as:
-                        * With a digit after it or before it, and with a space where there is no digit.
-                        * With a '-' before it and a digit after it.
-                        * If there wasn't any other '.' and a sequence of numbers before it.
-                        */
-                        if (line[j] == '.' && flag == 0 &&
-                            (((j != 0) && (isdigit(line[j - 1]) ||
-                            (line[j - 1] == '-' || line[j - 1] == ' ') && isdigit(line[j + 1]))) ||
-                            isdigit(line[j + 1])))  {
-                        // Found decimal point, stops counting
-                        flag = 1;
-                        j++; 
-                        // The '.' or '-' are not legal.
+        int countBeforePoint = 0;
+        int flag = 0;
+        int i = 0;
+        // Will be returned for illegal strings.
+        VectorCalDis emptyV;
+        VectorCalDis v;
+        // Goes over the string.
+        while (i < line.size()) {
+            // skips spaces
+            if (line[i] == ' ') {
+                i++;
+                continue;
+            } else {
+                // only allows digits, '.' or '-'.
+                if(isdigit(line[i]) || line[i] == '-' || line[i] == '.') {
+                    int j = i;
+                    // goes over a potential double value.
+                    while (line[j] != ' ' && j < line.size()) {
+                        if (isdigit(line[j])) {
+                            if (flag == 0) {
+                            // counts digits before the decimal point.
+                            countBeforePoint++;
+                            }
+                            j++;
+                            // May overflow, avoids it.
+                            if (countBeforePoint > 307) {
+                                return emptyV;
+                            }
                         } else {
-                        return emptyV;
+
+                            /*
+                            * '-' can only be as:
+                            * The first char and have a digit or a '.' after it.
+                            * A char after a space and have a digit or a '.' after it.
+                            */ 
+                            if (line[j] == '-' && ((j == 0) || (line[j - 1] == ' ')) &&
+                                (isdigit(line[j + 1]) || (line[j + 1] == '.' ))) {
+                                j++;
+                            } else {
+                                /*
+                                * '.' can only be as:
+                                * With a digit after it or before it, and with a space where there is no digit.
+                                * With a '-' before it and a digit after it.
+                                * If there wasn't any other '.' and a sequence of numbers before it.
+                                */
+                                if (line[j] == '.' && flag == 0 &&
+                                    (((j != 0) && (isdigit(line[j - 1]) ||
+                                    (line[j - 1] == '-' || line[j - 1] == ' ') && isdigit(line[j + 1]))) ||
+                                    isdigit(line[j + 1])))  {
+                                // Found decimal point, stops counting
+                                flag = 1;
+                                j++; 
+                                // The '.' or '-' are not legal.
+                                } else {
+                                return emptyV;
+                                }
+                            }
                         }
                     }
+                // Will count digits again
+                flag = 0;
+                // Saves the legal double value in the vector.
+                string num = line.substr(i, j);
+                v.push_back(stod(num));
+                // Jumps to after the value.
+                i = j;
+                // Illegal char.
+                } else {
+                    return emptyV;
                 }
             }
-        // Will count digits again
-        flag = 0;
-        // Saves the legal double value in the vector.
-        string num = line.substr(i, j);
-        v.push_back(stod(num));
-        // Jumps to after the value.
-        i = j;
-        // Illegal char.
-        } else {
-            return emptyV;
         }
+         return v;
     }
-}
-return v;
-}
 
     /*
     * func name: resizeShorter
@@ -309,3 +313,70 @@ return v;
         return minkovswiSum;
 
     }
+
+/*
+* Func name: createUnClisDB
+* Input: string dirToFile, string with path to a cvs file which contains the vectors
+* Output: vector <VectorCalDis>, vector of unclassified VectorCalDis vectors
+* Function operation: create a DB of VectorCalDis vectors from csv file which contains the information on the vectors
+*/
+vector <VectorCalDis>*  VectorCalDis::createUnClisDB(string dirToFile){
+    //stream pointer to the file
+    ifstream fin;
+    //check if this is a cvs file
+    std::regex csvRegex(".*\\.csv$", std::regex_constants::ECMAScript | std::regex_constants::icase);
+    if (!std::regex_match(dirToFile, csvRegex)) {
+        printf("The file is not a CSV file.\n");
+        return NULL;
+    }
+    vector <VectorCalDis> *DB = new vector <VectorCalDis>;
+    // Open an existing file
+    fin.open(dirToFile, ios::in);
+    //check if the openning has succeeded
+    if(fin.is_open()) {
+        // Read the Data from the file
+        //line by line
+        string line;
+        // store it in a string variable 'line'
+        while (getline(fin, line)) {
+            VectorCalDis v;
+            string val;
+            string newVec;
+            VectorCalDis temp;
+            // used for breaking to seperates values
+            stringstream s(line);
+            // read every value of date and
+            // store it in a string with spaces, run untill he gets the last val (the classification), ignore - or . chars
+            while (getline(s, val, ',')) {
+                newVec += val;
+                //insert space between every value
+                newVec += " ";
+            }
+            //cut the \r ending
+            newVec.replace(newVec.length() - 2,1,"");
+            //check if we can create vector from the values
+            v = VectorCalDis :: vectorFromString(newVec);
+            //if we couldn't create vector from this record
+            if(v.empty()) {
+                continue;
+            }
+            DB->push_back(v);
+        }
+        fin.close();
+        if (DB->empty()){
+            delete DB;
+            return NULL;
+        }
+        //if we couldn't open the file
+    } else{
+        delete DB;
+        return NULL;
+    }
+    return DB;
+}
+/**
+ * constructor with vector<double> which copy his values
+ */
+VectorCalDis::VectorCalDis(std::vector<double> v) : vector<double>(std::move(v)) {}
+
+VectorCalDis::VectorCalDis() : std::vector<double>(){};

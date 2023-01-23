@@ -6,14 +6,9 @@
 
 
 using namespace std;
-class Display : protected Command {
-private:
-    vector<string> clsifics;
-
+class Display : public Command {
 public:
-    Display(vector<string>, string, DefaultIO);
-    vector<string> getClsifics();
-    void setClsifics(vector<string>);
+    Display(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
     virtual void execute();
 };
 

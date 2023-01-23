@@ -84,6 +84,15 @@ KnnVec KnnVec :: createFromStr(std :: string line){
         return v;  
 }
 
+KnnVec KnnVec::convertToKnn(std::string clas, VectorCalDis v) {
+    KnnVec newV = KnnVec();
+    //set the classification
+    newV.setClassification(clas);
+    //copy the values of v to the newV
+    copy(v.begin(), v.end(), back_inserter(newV));
+    return newV;
+}
+
 
  
 
