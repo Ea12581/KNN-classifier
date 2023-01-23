@@ -1,9 +1,7 @@
-all: server.out client.out
+all: a.out
 
-server.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o Command.o Download.o Display.o Settings.o StandardIO.o UploadC.o mainServer.o 
-	g++ -o server.out mainServer.o CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o Command.o Download.o Display.o server.o StandardIO -std=c++11
-client.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o Client.o
-	g++ -o client.out Client.o CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o -std=c++11
+a.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o DefaultIO.o StandardIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o CLI.o 
+	g++ -o a.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o DefaultIO.o StandardIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o CLI.o -std=c++11
 CheckInput.o: CheckInput.cpp
 	g++ -c -o CheckInput.o CheckInput.cpp -std=c++11
 VectorCalDis.o: VectorCalDis.cpp
@@ -32,6 +30,8 @@ Settings.o: Settings.cpp
 	g++ -c -o Settings.o Settings.cpp -std=c++11
 UploadC.o: UploadC.cpp
 	g++ -c -o UploadC.o UploadC.cpp -std=c++11
+DefaultIO.o: DefaultIO.cpp
+	g++ -c -o DefaultIO.o DefaultIO.cpp -std=c++11
 StandardIO.o: StandardIO.cpp
 	g++ -c -o StandardIO.o StandardIO.cpp -std=c++11
 clean:
