@@ -63,7 +63,7 @@ if(uploadTrain(path)){
         return;
     }
     //if the upload of the test file hasn't succeeded, set the other file as nullPtr to wipe it from the shared data
-    setMTrain(nullptr);
+    delete this->getSd()->getKnnDb();
 }
 }
 
@@ -72,6 +72,7 @@ if(uploadTrain(path)){
  * @param mTrain train knn vectors to build the Knn database
  */
 void UploadC::setMTrain(vector<KnnVec> *mTrain) {
+    delete this->getSd()->getKnnDb();
     this->getSd()->setKnnDb(new KnnDB(*mTrain));
 }
 
@@ -80,6 +81,7 @@ void UploadC::setMTrain(vector<KnnVec> *mTrain) {
  * @param mTest pointer to the unClassified vectos
  */
 void UploadC::setMTest(vector<VectorCalDis> *mTest) {
+    delete this->getSd()->getUnClassified();
     this->getSd()->setUnClassified(mTest);
 }
 

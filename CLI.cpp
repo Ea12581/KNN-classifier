@@ -29,15 +29,10 @@ public:
         StandardIO tempIO = StandardIO();
         DefaultIO& IO = tempIO;
         UploadC upload = UploadC("upload an unclassified csv data file", IO, sd);
-        sd->incCounter();
         Settings settings = Settings("algorithm settings", IO, sd);
-        sd->incCounter();
         Classify classify = Classify("classify data", IO, sd);
-        sd->incCounter();
         Display display = Display("display results", IO, sd);
-        sd->incCounter();
         Download download = Download("download results", IO, sd);
-        sd->incCounter();
         Command* commands[NUM_OF_CMDS] = {&upload, &settings, &classify, &display, &download};
         int option = 0;
         bool isEight = false;
@@ -60,6 +55,8 @@ public:
             if (!isEight) {
                 cout  << printMenu(commands);
                 cin >> option;
+                //clear the buffer
+                getline(std::cin, input);
             }
         }
     }

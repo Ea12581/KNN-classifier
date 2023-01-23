@@ -5,11 +5,6 @@
 
 
 using namespace std;
-class StandardIO : public DefaultIO {
-public:
-    string read();
-    void write(string);
-
-};
+class StandardIO : public DefaultIO {};
 
 #endif

@@ -8,7 +8,7 @@
     * Output: string (the input from the user)
     * Function Operation: Gets input from the user and returns it.
     */
-    string StandardIO::read()  {
+    string StandardIO::DefaultIO::read(){
         string input;
         getline(std::cin, input);
         return input;
@@ -20,6 +20,6 @@
     * Output: none
     * Function Operation: Prints the string to output.
     */
-    void StandardIO::write(string output) {
+    void StandardIO::DefaultIO::write(string output) {
         cout << output << endl;
     }
