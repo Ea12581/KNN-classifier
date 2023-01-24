@@ -5,10 +5,6 @@
 
 
 using namespace std;
-class StandardIO : public DefaultIO {
-    string read() override;
-    void write(string output) override;
-
-};
+class StandardIO : public DefaultIO {};
 
 #endif
