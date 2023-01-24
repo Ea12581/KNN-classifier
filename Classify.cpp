@@ -56,13 +56,13 @@ void Classify::setMetric(string _metric) {
 void Classify::execute() {
     string output;
     if (getSd()->getUnClassified() == nullptr) {
-        output = "please upload data\n";
+        output = "please upload data";
     } else {
         KnnDB temp;
         vector<KnnVec> *tempVec = new vector<KnnVec>;
         *tempVec = temp.createDBFromValCalDis(*(getSd()->getUnClassified())); 
         getSd()->setClassified(tempVec);
-        output = "classifying data complete\n";
+        output = "classifying data complete";
     }
     getDio().write(output);
 }

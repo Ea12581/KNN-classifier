@@ -6,6 +6,7 @@
 #include "Classify.h"
 #include "Display.h"
 #include "Download.h"
+#include "CheckInput.h"
 #define NUM_OF_CMDS 5
 
 
@@ -54,9 +55,13 @@ public:
             }
             if (!isEight) {
                 cout  << printMenu(commands);
-                cin >> option;
-                //clear the buffer
                 getline(std::cin, input);
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                if (isNumber(&input[0])) {
+                    option = stoi(input);
+                } else {
+                    option = 0;
+                }
             }
         }
     }

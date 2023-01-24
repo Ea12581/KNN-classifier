@@ -5,6 +5,8 @@
 #include "KnnDB.h"
 #include <iostream>
 #include <utility>
+#define DEFAULT_K 5
+#define DEFAULT_METRIC "EUC"
 
 /**
  * upload cvs unclassified VectorCalDis vectors file.
@@ -60,6 +62,8 @@ if(uploadTrain(path)){
     path = getDio().read();
     //check if succeeded
     if(uploadTest(path)){
+        getSd()->setK(DEFAULT_K);
+        getSd()->setMetric(DEFAULT_METRIC);
         return;
     }
     //if the upload of the test file hasn't succeeded, set the other file as nullPtr to wipe it from the shared data

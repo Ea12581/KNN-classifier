@@ -15,6 +15,9 @@ using namespace std;
 */
 bool isNumber(char input2[]) {
     int size = strlen(input2);
+    if (size == 0) {
+        return 0;
+    }
     for (int i = 0; i < size; i++) {
         if(!isdigit(input2[i])) {
             return 0;
