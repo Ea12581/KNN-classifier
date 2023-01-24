@@ -33,7 +33,7 @@ void Download::execute() {
         }
         //file << output;
     }
-    getDio().write(output);
+    getDio()->write(output);
     /*if (!file) {
         output = "couldn't create the file!\n";
     } else {

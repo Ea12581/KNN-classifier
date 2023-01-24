@@ -26,6 +26,6 @@ void Display::execute() {
         }
         output.append("Done.\n");
     }
-    getDio().write(output);
+    getDio()->write(output);
 }
 

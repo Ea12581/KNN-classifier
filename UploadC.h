@@ -25,10 +25,9 @@ public:
      * @param _desc description of the command
      * @param _dio io of the command
      */
-    UploadC(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
-    bool IsFilesWasUpload();
-    bool uploadTrain(string path);
-    bool uploadTest(string path);
+    UploadC(string _desc, DefaultIO* _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
+    bool uploadTrain();
+    bool uploadTest();
     void execute() override;
 
 };
