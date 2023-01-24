@@ -3,7 +3,7 @@
 #include <string>
 #include "Command.h"
 #define DEFAULT_K 5
-#define DEFAULT_METRIC "EUC"
+#define DEFAULT_METRIC "AUC"
 
 
 using namespace std;

@@ -56,7 +56,6 @@ public:
             if (!isEight) {
                 cout  << printMenu(commands);
                 getline(std::cin, input);
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 if (isNumber(&input[0])) {
                     option = stoi(input);
                 } else {
