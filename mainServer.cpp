@@ -62,8 +62,9 @@ int main(int argc, char *argv[]){
             ::exit(1);
         //listen to connections
         int listenFlag = server.listenToNewConnections();
-        if(listenFlag < 0)
-            ::exit(1);
+        if(listenFlag < 0) {
+            exit(1);
+        }
 
     }else{
         cout << "Second input is not a legal m_port number!"<< endl;
