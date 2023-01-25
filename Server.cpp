@@ -112,7 +112,7 @@ void Server::setPort(int port) {
 void* start(void* args) {
     struct socketInfo* info =  (socketInfo*)(args);
     int sock = *(info->clientSock);
-    Server* server = info->sever;
+    Server* server = info->server;
     server->setMClient(sock);
         int option = 0;
         bool isEight = false;
@@ -174,10 +174,12 @@ int Server::listenToNewConnections() {
         }
         getSIO().setMClient(clientSock);
         pthread_t thread;
-        struct socketInfo* args;
-        args->clientSock = &clientSock;
-        args->sever = this;
-        if(pthread_create(&thread, NULL, start, args) != 0)
+        struct socketInfo args;
+        args.clientSock = new int;
+        args.clientSock = &clientSock;
+        args.server = new Server(0, 0);
+        args.server = this;
+        if(pthread_create(&thread, NULL, start, &args) != 0)
         {
             perror("Error creating thread");
             continue;
@@ -235,7 +237,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
     //check if the m_port is number and legal m_port
-    if(isNumber(argv[1]) && isLegalPort(argv[1])){
+    if(isNumber(argv[1]) && isLegalPort(stoi(argv[1]))){
 
         //take th m_port
         int decimalBase = 10;

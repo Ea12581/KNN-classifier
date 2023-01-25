@@ -62,23 +62,28 @@ void SocketIO::setMClient(int client) {
         // Read data from the socket in chunks until the entire message has been received
         while (true)
         {
-            int read_bytes = recv(m_client, buffer, expected_data_len, 0);
+            int read_bytes = recv(((SocketIO*)this)->getMClient(), buffer, expected_data_len, 0);
+            char* finish = strchr(buffer,'@');
+            //finish massage
+            if (finish != NULL){
+                //remove @
+                *finish = '\0';
 
                 // Append the data to the message
                 message.append(buffer, read_bytes);
                 // Connection closed by the client
-
-            if (read_bytes < 0)
+                break;
+            }
+            else if (read_bytes < 0)
             {
                 // Error
                 perror("error reading from socket");
                 break;
             }
-            //if the buffer is not full, we read everything from the client
-            if(read_bytes < expected_data_len)
-                break;
-            //clear the buffer
-            memset(buffer,0,expected_data_len);
+
+            // Append the data to the message
+            message.append(buffer, read_bytes);
+
         }
 
         return message;
@@ -92,6 +97,6 @@ void SocketIO::setMClient(int client) {
     */
     void SocketIO::DefaultIO::write(string output) {
         output += '\n';
-        send(m_client, output.c_str(), output.length(), 0);
+        send(((SocketIO*)this)->getMClient(), output.c_str(), output.length(), 0);
     }
 

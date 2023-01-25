@@ -13,6 +13,22 @@ using namespace std;
 * Output: bool (true for a number, false otherwise)
 * Function operation: Checks if a string is a positive number.
 */
+bool isNumber(char input2[]) {
+    int size = strlen(input2);
+    for (int i = 0; i < size; i++) {
+        if(!isdigit(input2[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+/*
+* Function Name: isNumber
+* Input: const char input1[] (an array of characters)
+* Output: bool (true for a number, false otherwise)
+* Function operation: Checks if a string is a positive number.
+*/
 bool isNumber(const char input2[]) {
     int size = strlen(input2);
     for (int i = 0; i < size; i++) {

@@ -2,6 +2,8 @@ all: client.out server.out
 
 server.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o
 	g++ -pthread -o server.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o -std=c++11
+client.out :  CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Client.o
+	g++ -pthread -o client.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Client.o -std=c++11
 CheckInput.o: CheckInput.cpp
 	g++ -c -o CheckInput.o CheckInput.cpp -std=c++11
 VectorCalDis.o: VectorCalDis.cpp
@@ -13,7 +15,7 @@ KnnDB.o: KnnDB.cpp
 Server.o: Server.cpp
 	g++ -pthread -c -o Server.o Server.cpp -std=c++11
 Client.o: Client.cpp
-	g++ -c -o Client.o Client.cpp -std=c++11
+	g++ -pthread -c -o Client.o Client.cpp -std=c++11
 CLI.o: CLI.cpp
 	g++ -c -o CLI.o CLI.cpp -std=c++11
 Classify.o: Classify.cpp

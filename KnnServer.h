@@ -2,33 +2,36 @@
 // Created by oem on 12/31/22.
 //
 
-#ifndef SERVER_H
-#define SERVER_H
-#include "SocketIO.h"
+#ifndef B11_KNNSERVER_H
+#define B11_KNNSERVER_H
+#include "KnnDB.h"
 #include "Command.h"
 /*
  * header for the server class
  */
 
-class Server{
+class KnnServer{
 private:
+    KnnDB* m_KnnDBP;
     long m_port;
     int m_sockNum;
     int m_client;
-    SocketIO IO;
-    Command** cmd;
-public:
-    Server(int,int);
-    ~Server();
+    vector<string> splitMessage(string massage);
+    std::string readMessage();
     int getMClient() const;
     void setMClient(int mClient);
+    Command** cmd;
+public:
+    explicit KnnServer(KnnDB *mKnnDbp);
+    virtual ~KnnServer();
     int getPort() const;
     void setPort(int port);
     int getSockNum() const;
-    SocketIO getSIO();
-    Command** getCmds();
-    void setCmds();
     void setSockNum(int sockNum);
+    KnnDB *getMKnnDbp() const;
+    void setMKnnDbp(KnnDB *mKnnDbp);
+    Command** getCmd();
+    void setCmd(Command**);
     int bindServer();
     int closeServer();
     int listenToNewConnections();
@@ -36,9 +39,4 @@ public:
 
 };
 
-struct socketInfo {
-    int* clientSock;
-    Server* server;
-};
-
-#endif 
+#endif //KNNSERVER_H
