@@ -9,7 +9,6 @@
 #include <string>
 #include "VectorCalDis.h"
 #include "KnnDB.h"
-#include "KnnServer.h"
 #include <string.h>
 #include "CheckInput.h"
 
@@ -24,26 +23,16 @@ using namespace std;
     * to create database of Knn vectors and to build socket for listening for clients who want to connect
     */
 int main(int argc, char *argv[]){
-    if (argc != 3) {
+    if (argc != 2) {
         printf("Wrong number of arguments!\n");
         exit(1);
     }
     //check if the m_port is number and legal m_port
-    if(isNumber(argv[2]) && isLegalPort(argv[2])){
-        //take the path to the database
-        string path = argv[1];
-        auto* vectorsDB = new KnnDB(path);
-        // k = -1 means the file could not be opened
-        if (vectorsDB->getK() == -1) {
-            delete vectorsDB;
-            exit(1);
-        }
-        //create the socket with the db
-        KnnServer server = KnnServer(vectorsDB);
+    if(isNumber(argv[1]) && isLegalPort(argv[1])){
 
         //take th m_port
         int decimalBase = 10;
-        const long port_no = std::strtol(argv[2], nullptr,decimalBase);
+        const long port_no = std::strtol(argv[1], nullptr,decimalBase);
         server.setPort(port_no);
 
         // Create a socket
@@ -62,11 +51,12 @@ int main(int argc, char *argv[]){
             ::exit(1);
         //listen to connections
         int listenFlag = server.listenToNewConnections();
-        if(listenFlag < 0)
-            ::exit(1);
+        if(listenFlag < 0) {
+            exit(1);
+        }
 
     }else{
-        cout << "Second input is not a legal m_port number!"<< endl;
+        cout << "first input is not a legal m_port number!"<< endl;
     }
     return 0;
 }

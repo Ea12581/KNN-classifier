@@ -15,9 +15,9 @@ public:
     int getMClient() const;
 
     SocketIO(int server, int client);
-
     string read();
     void write(string output);
+
 
 };
 

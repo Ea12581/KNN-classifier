@@ -6,9 +6,10 @@
 #include <iostream>
 #include <utility>
 #include <sstream>
-
 #define DEFAULT_K 5
-#define DEFAULT_METRIC "EUC"
+#define DEFAULT_METRIC "AUC"
+
+
 
 /**
  * upload cvs unclassified VectorCalDis vectors file.

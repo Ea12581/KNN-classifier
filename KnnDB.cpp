@@ -34,6 +34,7 @@ KnnDB::KnnDB(vector<KnnVec> DB) {
     this->m_DB = std::move(DB);
     this->m_metricType = "none";
     this->m_k = 0;
+    createMap();
 }
 
 /*

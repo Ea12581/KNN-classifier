@@ -39,7 +39,9 @@ int SocketIO::getMClient() const {
 * Output: string (the input from the user)
 * Function Operation: Gets input from the user and returns it.
 */
-    string SocketIO::read(){
+
+    string SocketIO::DefaultIO::read(){
+
         std::string message;
         char buffer[4096];
         int expected_data_len = sizeof(buffer);
@@ -68,6 +70,7 @@ int SocketIO::getMClient() const {
 
             // Append the data to the message
             message.append(buffer, read_bytes);
+
         }
 
         return message;
@@ -79,7 +82,7 @@ int SocketIO::getMClient() const {
     * Output: none
     * Function Operation: Prints the string to output.
     */
-    void SocketIO::write(string output) {
+    void SocketIO::DefaultIO::write(string output) {
         output += '\n';
         send(m_client, output.c_str(), output.length(), 0);
     }
