@@ -8,7 +8,7 @@
 #include <sstream>
 #include <cstring>
 #define DEFAULT_K 5
-#define DEFAULT_METRIC "EUC"
+#define DEFAULT_METRIC "AUC"
 
 
 

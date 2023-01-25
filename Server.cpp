@@ -114,10 +114,6 @@ void* Server::start_helper(void* arg) {
 }
 
 void* Server::start() {
-    //struct SocketInfo* info = (SocketInfo*)(args);
-    //int sock = *(info->clientSock);
-   // Server* server = info->server;
-    //server->setMClient(sock);
         int option = 0;
         bool isEight = false;
         string input;
