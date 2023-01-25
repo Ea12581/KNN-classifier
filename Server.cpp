@@ -12,6 +12,14 @@
 #include "VectorCalDis.h"
 #include "KnnDB.h"
 #include "CheckInput.h"
+#include "Server.h"
+#include "Settings.h"
+#include "UploadC.h"
+#include "Display.h"
+#include "Download.h"
+#include "Command.h"
+#include "Classify.h"
+#define NUM_OF_CMDS 5
 
 
 
@@ -19,10 +27,10 @@
  *
  * constructor
  */
-Server::Server() {
-    m_port = 0;
-    m_sockNum = 0;
-    IO = SocketIO();   
+Server::Server(int port, int sock) {
+    m_port = port;
+    m_sockNum = sock;
+    IO = SocketIO(port, sock);   
     setCmds();
 }
 
@@ -37,12 +45,14 @@ Server::~Server() {
 }
 
 void Server::setCmds() {
-        UploadC upload = UploadC("upload an unclassified csv data file", IO, sd);
-        Settings settings = Settings("algorithm settings", IO, sd);
-        Classify classify = Classify("classify data", IO, sd);
-        Display display = Display("display results", IO, sd);
-        Download download = Download("download results", IO, sd);
-        cmd[NUM_OF_CMDS] = {&upload, &settings, &classify, &display, &download};
+        ShareData *sd = new ShareData();
+        UploadC upload = UploadC("upload an unclassified csv data file", &IO, sd);
+        Settings settings = Settings("algorithm settings", &IO, sd);
+        Classify classify = Classify("classify data", &IO, sd);
+        Display display = Display("display results", &IO, sd);
+        Download download = Download("download results", &IO, sd);
+        Command* temp[NUM_OF_CMDS] = {&upload, &settings, &classify, &display, &download};
+        cmd = temp;
 }
 
 /**
@@ -89,11 +99,47 @@ int Server::getPort() const {
 }
 
 /**
- * set the port of the servet
+ * set the port of the server
  * @param port number
  */
 void Server::setPort(int port) {
     Server::m_port = port;
+}
+
+
+void* start(void* clientSock, Server* server) {
+    int sock = *(int*)clientSock;
+    server->setMClient(sock);
+        int option = 0;
+        bool isEight = false;
+        string input;
+        while (!isEight) {
+            switch (option) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    server->getCmds()[option-1]->execute();
+                    break;
+                case 8:
+                    isEight = true;
+                    break;
+                default:
+                    break;
+            }
+            if (!isEight) {
+                server->getSIO().write(server->sendMenu());
+                input = server->getSIO().read();
+                if (isNumber(input.c_str())) {
+                    option = stoi(input);
+                } else {
+                    option = 0;
+                }
+            }
+        }
+    close(sock);
+    pthread_exit(NULL);
 }
 
 /**
@@ -122,50 +168,16 @@ int Server::listenToNewConnections() {
             perror("error accepting connection");
             continue;
         }
-
+        getSIO().setMClient(clientSock);
         pthread_t thread;
-        if(pthread_create(&thread, NULL, &start, (void*)&clientSock) != 0)
+        void* args = {&clientSock, this}
+        if(pthread_create(&thread, NULL, &start(void *), args) != 0)
         {
             perror("Error creating thread");
             continue;
         }
     }
     return 0;
-}
-
-void* Server::start(void* clientSock) {
-    int sock = *(int*)clientSock;
-    m_client = clientSock;
-        int option = 0;
-        bool isEight = false;
-        string input;
-        while (!isEight) {
-            switch (option) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    commands[option-1]->execute();
-                    break;
-                case 8:
-                    isEight = true;
-                    break;
-                default:
-                    break;
-            }
-            if (!isEight) {
-                IO.write(sendMenu);
-                input = IO.read();
-                if (&input[0].isNumber()) {
-                    option = stoi(input);
-                } else {
-                    option = 0;
-                }
-            }
-        }
-    close(clientSock);
-    pthread_exit(NULL);
 }
 
 
@@ -222,7 +234,7 @@ int main(int argc, char *argv[]){
         //take th m_port
         int decimalBase = 10;
         const long port_no = std::strtol(argv[1], nullptr,decimalBase);
-        Server server = Server();
+        Server server = Server(0, 0);
         server.setPort(port_no);
         // Create a socket
         int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -233,11 +245,13 @@ int main(int argc, char *argv[]){
         }
         //set the sock number
         server.setSockNum(sock);
+        
         // Bind the socket to the specified m_port
+        server.getSIO().setMServer(server.getSockNum);
         int bindFlag = server.bindServer();
         //if the bind has failed
         if(bindFlag < 0)
-            ::exit(1);
+            exit(1);
         //listen to connections
         int listenFlag = server.listenToNewConnections();
         if(listenFlag < 0) {

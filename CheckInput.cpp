@@ -13,7 +13,7 @@ using namespace std;
 * Output: bool (true for a number, false otherwise)
 * Function operation: Checks if a string is a positive number.
 */
-bool isNumber(char input2[]) {
+bool isNumber(const char input2[]) {
     int size = strlen(input2);
     if (size == 0) {
         return 0;

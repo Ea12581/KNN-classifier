@@ -15,12 +15,13 @@ private:
     long m_port;
     int m_sockNum;
     int m_client;
-    int getMClient() const;
-    void setMClient(int mClient);
     SocketIO IO;
     Command** cmd;
 public:
-    Server();
+    Server(int,int);
+    ~Server();
+    int getMClient() const;
+    void setMClient(int mClient);
     int getPort() const;
     void setPort(int port);
     int getSockNum() const;
@@ -31,7 +32,6 @@ public:
     int bindServer();
     int closeServer();
     int listenToNewConnections();
-    void* start(void*);
     std::string sendMenu();
 
 };

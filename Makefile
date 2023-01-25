@@ -1,7 +1,7 @@
 all: client.out server.out
 
 server.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o
-	g++ -o a.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o -std=c++11
+	g++ -o server.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o -std=c++11
 CheckInput.o: CheckInput.cpp
 	g++ -c -o CheckInput.o CheckInput.cpp -std=c++11
 VectorCalDis.o: VectorCalDis.cpp

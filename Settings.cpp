@@ -53,11 +53,12 @@ void Settings::setMetric(string _metric) {
 void Settings::execute() {
     string input = getDio()->read();
     string output;
-    if (input == "") {
         output = "The current KNN parameters are: K = ";
         output.append(to_string(getK()));
         output.append(", distance metric = ");
         output.append(getMetric());
+    if (input == "") {
+        return;
     } else {
         int firstSpace = input.find(" ");
         if (firstSpace == -1) {
@@ -82,10 +83,6 @@ void Settings::execute() {
                 if (isKLegal) {
                     setK(stoi(k));
                     setMetric(metric);
-                    output = "The current KNN parameters are: K = ";
-                    output.append(to_string(getK()));
-                    output.append(", distance metric = ");
-                    output.append(getMetric());
                 }
             }
         }
