@@ -12,17 +12,8 @@
 #include <string>
 #include "SocketIO.h"
 
-SocketIO::SocketIO(int server, int client) {
-    m_server = server;
+SocketIO::SocketIO(int client) {
     m_client = client;
-}
-
-/**
- * getter for the id number of the server socket
- * @return int id socket
- */
-int SocketIO::getMServer() const {
-    return m_server;
 }
 
 /**
@@ -48,26 +39,22 @@ int SocketIO::getMClient() const {
         while (true)
         {
             int read_bytes = recv(m_client, buffer, expected_data_len, 0);
-            if (read_bytes == 0)
-            {
+
+                // Append the data to the message
+                message.append(buffer, read_bytes);
                 // Connection closed by the client
-                break;
-            }
-            else if (read_bytes < 0)
+
+            if (read_bytes < 0)
             {
                 // Error
                 perror("error reading from socket");
                 break;
             }
-
-            // Append the data to the message
-            message.append(buffer, read_bytes);
-
-            // Check if the entire message has been received
-            if (read_bytes < expected_data_len)
-            {
+            //if the buffer is not full, we read everything from the client
+            if(read_bytes < expected_data_len)
                 break;
-            }
+            //clear the buffer
+            memset(buffer,0,expected_data_len);
         }
 
         return message;
@@ -80,6 +67,7 @@ int SocketIO::getMClient() const {
     * Function Operation: Prints the string to output.
     */
     void SocketIO::write(string output) {
+        output += '\n';
         send(m_client, output.c_str(), output.length(), 0);
     }
 

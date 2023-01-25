@@ -8,16 +8,15 @@ using namespace std;
 class SocketIO : public DefaultIO {
 private:
     int m_client;
-    int m_server;
 public:
     int getMServer() const;
 
     int getMClient() const;
 
-    SocketIO(int server, int client);
+    SocketIO(int client);
 
-    string read() override;
-    void write(string output) override;
+    string read();
+    void write(string output);
 
 };
 

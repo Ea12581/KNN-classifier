@@ -70,7 +70,7 @@ private:
     //description represented by string
     string desc;
     //dio, a DefaultIO type
-    DefaultIO dio;
+    DefaultIO* dio;
     //pointer to shared date between all the commands
     ShareData* sd;
 public:
@@ -80,11 +80,11 @@ public:
 
 public:
 
-    Command(string _desc, DefaultIO _dio, ShareData* sd);
+    Command(string _desc, DefaultIO* _dio, ShareData* sd);
     void setDesc(string _desc);
-    void setDio(DefaultIO _dio);
+    void setDio(DefaultIO* _dio);
     string getDesc();
-    DefaultIO getDio();
+    DefaultIO* getDio();
     virtual void execute() = 0;
 
     virtual ~Command();

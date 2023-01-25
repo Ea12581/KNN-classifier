@@ -13,21 +13,34 @@
 * of classifications.
 */
 void Download::execute() {
+    //string path = getDio().read();
+    //std::ofstream file(path);
     string output;
     if (!getSd()->isUnClaExists()) {
-        output = "please upload data";
+        output = "please upload data\n";
     } else if (!getSd()->isClassifiedExists()) {
-        output = "please classify the data";
+        output = "please classify the data\n";
+    /*} else if (!file) {
+        output = "couldn't create the file!\n";
+    } else if (file) {*/
     } else {
-        for (int i = 1; i <= getSd()->getClassified()->size(); i++) {
-            string index = to_string(i);
-            output.append(index);
-            output.append(" ");
-            output.append((*(getSd()->getClassified())).at(i-1).getClassification());
-            if (i != getSd()->getClassified()->size()) {
+        int length = getSd()->getClassified()->size();
+            for (int i = 0; i < length; i++) {
+                string index = to_string(i + 1);
+                output.append(index);
+                output.append(" ");
+                output.append((*(getSd()->getClassified())).at(i).getClassification());
                 output.append("\n");
             }
-        }
+
+        getDio()->write(output);
+            //get finish massage
+            getDio()->read();
     }
-    getDio().write(output);
+
+    /*if (!file) {
+        output = "couldn't create the file!\n";
+    } else {
+        file << output;
+    }/*/
 }

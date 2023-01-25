@@ -8,7 +8,7 @@
 using namespace std;
 class Display : public Command {
 public:
-    Display(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
+    Display(string _desc, DefaultIO* _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
     virtual void execute();
 };
 

@@ -5,6 +5,9 @@
 #include "KnnDB.h"
 #include <iostream>
 #include <utility>
+#include <sstream>
+#include <cstring>
+
 #define DEFAULT_K 5
 #define DEFAULT_METRIC "AUC"
 
@@ -13,18 +16,50 @@
  * @param path  to the csv file
  * @return true if the upload was succeeded, false other wise
  */
-bool UploadC::uploadTest(string path) {
+bool UploadC::uploadTest() {
+    //create DB of vectors
     vector <VectorCalDis>* test;
-    test = VectorCalDis::createUnClisDB(path);
+    // Read the Data from the file
+    string vectors = getDio()->read();
+    if(::strcmp(vectors.c_str(),"error") != 0) {
+        test = new vector <VectorCalDis>;
+        // ss is an object of stringstream that references the S string.
+        stringstream ss(vectors);
+        //line by line
+        string line;
+        // store it in a string variable 'line'
+        while (getline(ss, line, '\n')) {
+            VectorCalDis v;
+            string val;
+            string newVec;
+            VectorCalDis temp;
+            // used for breaking to seperates values
+            stringstream s(line);
+            // read every value of date and
+            // store it in a string with spaces, run untill he gets the last val (the classification), ignore - or . chars
+            while (getline(s, val, ',')) {
+                newVec += val;
+                //insert space between every value
+                newVec += " ";
+            }
+            //cut the \r ending
+            newVec.replace(newVec.length() - 2, 1, "");
+            //check if we can create vector from the values
+            v = VectorCalDis::vectorFromString(newVec);
+            //if we couldn't create vector from this record
+            if (v.empty()) {
+                continue;
+            }
+            test->push_back(v);
+        }
+    } else{
 //if the path was not correct
-    if(test == NULL){
-        getDio().write("invalid input");
         return false;
     }
 //set the test file
     setMTest(test);
     //send the client
-    getDio().write("Upload complete");
+    getDio()->write("Upload complete");
 return true;
 };
 
@@ -33,18 +68,32 @@ return true;
  * @param path  to the csv file
  * @return true if the upload was succeeded, false other wise
  */
-bool UploadC::uploadTrain(string path){
-    vector <KnnVec>* train = KnnDB::createDB(path);
-//if the path was not correct
-    if(train == NULL){
-        getDio().write("invalid input");
+bool UploadC::uploadTrain(){
+    //create DB of vectors
+    vector <KnnVec>* train;
+    string vectors = getDio()->read();
+    if(std::strcmp(vectors.c_str(),"error") != 0){
+        train = new vector <KnnVec>;
+        // ss is an object of stringstream that references the S string.
+        stringstream ss(vectors);
+        //take them lie by line
+        string line;
+        KnnVec v;
+        while(getline(ss,line,'\n')){
+            v = KnnVec :: createFromStr(line);
+            //if we couldn't create vector from this record
+            if(v.empty()) {
+                continue;
+            }
+            train->push_back(v);
+        }}else{
         return false;
     }
 //set the test file
-    setMTrain(train);
-    getDio().write("Upload complete");
-    return true;
-};
+        setMTrain(train);
+        return true;
+    }
+
 
 
 /**
@@ -52,16 +101,14 @@ bool UploadC::uploadTrain(string path){
  */
 void UploadC::execute() {
 //send the client
-getDio().write("Please upload your local train CSV file.");
+getDio()->write("Please upload your local train CSV file.");
 //get the path through the dio
-string path = getDio().read();
-if(uploadTrain(path)){
+if(uploadTrain()){
     //if the upload had successes
     //send the client
-    getDio().write("Please upload your local test CSV file.");
-    path = getDio().read();
+    getDio()->write("Upload complete\nPlease upload your local test CSV file.");
     //check if succeeded
-    if(uploadTest(path)){
+    if(uploadTest()){
         getSd()->setK(DEFAULT_K);
         getSd()->setMetric(DEFAULT_METRIC);
         return;
@@ -69,6 +116,7 @@ if(uploadTrain(path)){
     //if the upload of the test file hasn't succeeded, set the other file as nullPtr to wipe it from the shared data
     this->getSd()->freeTestSafely();
 }
+    getDio()->write("invalid input");
 }
 
 /**
