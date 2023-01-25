@@ -39,7 +39,9 @@ int SocketIO::getMClient() const {
 * Output: string (the input from the user)
 * Function Operation: Gets input from the user and returns it.
 */
+
     string SocketIO::DefaultIO::read(){
+
         std::string message;
         char buffer[4096];
         int expected_data_len = sizeof(buffer);
@@ -48,8 +50,14 @@ int SocketIO::getMClient() const {
         while (true)
         {
             int read_bytes = recv(m_client, buffer, expected_data_len, 0);
-            if (read_bytes == 0)
-            {
+            char* finish = strchr(buffer,'@');
+            //finish massage
+            if (finish != NULL){
+                //remove @
+                *finish = '\0';
+
+                // Append the data to the message
+                message.append(buffer, read_bytes);
                 // Connection closed by the client
                 break;
             }
@@ -63,11 +71,6 @@ int SocketIO::getMClient() const {
             // Append the data to the message
             message.append(buffer, read_bytes);
 
-            // Check if the entire message has been received
-            if (read_bytes < expected_data_len)
-            {
-                break;
-            }
         }
 
         return message;
@@ -80,6 +83,7 @@ int SocketIO::getMClient() const {
     * Function Operation: Prints the string to output.
     */
     void SocketIO::DefaultIO::write(string output) {
+        output += '\n';
         send(m_client, output.c_str(), output.length(), 0);
     }
 

@@ -51,7 +51,7 @@ void Settings::setMetric(string _metric) {
 * metric, if not - prints messages describing what part of the string was illegal.
 */
 void Settings::execute() {
-    string input = getDio().read();
+    string input = getDio()->read();
     string output;
     if (input == "") {
         output = "The current KNN parameters are: K = ";
@@ -90,5 +90,5 @@ void Settings::execute() {
             }
         }
     }
-    getDio().write(output);
+    getDio()->write(output);
 }

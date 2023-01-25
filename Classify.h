@@ -8,7 +8,7 @@
 using namespace std;
 class Classify : public Command {
 public:
-    Classify(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};    
+    Classify(string _desc, DefaultIO* _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
     int getK();
     string getMetirc();
     void setK(int);
