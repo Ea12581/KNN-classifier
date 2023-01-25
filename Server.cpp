@@ -32,7 +32,7 @@
 Server::Server(int port, int sock) {
     m_port = port;
     m_sockNum = sock;
-    IO = SocketIO(port, sock);   
+    IO = new SocketIO(port, sock);   
     setCmds();
 }
 
@@ -48,13 +48,12 @@ Server::~Server() {
 
 void Server::setCmds() {
         ShareData *sd = new ShareData();
-        UploadC upload = UploadC("upload an unclassified csv data file", &IO, sd);
-        Settings settings = Settings("algorithm settings", &IO, sd);
-        Classify classify = Classify("classify data", &IO, sd);
-        Display display = Display("display results", &IO, sd);
-        Download download = Download("download results", &IO, sd);
-        Command* temp[NUM_OF_CMDS] = {&upload, &settings, &classify, &display, &download};
-        cmd = temp;
+        cmd = new Command*[NUM_OF_CMDS];
+        cmd[0] = new UploadC("upload an unclassified csv data file", IO, sd);
+        cmd[1] = new Settings("algorithm settings", IO, sd);
+        cmd[2] = new Classify("classify data", IO, sd);
+        cmd[3] = new Display("display results", IO, sd);
+        cmd[4] = new Download("download results", IO, sd);
 }
 
 /**
@@ -108,12 +107,17 @@ void Server::setPort(int port) {
     Server::m_port = port;
 }
 
+void* Server::start_helper(void* arg) {
+    Server* self = static_cast<Server*>(arg);
+    self->start();
+    return NULL;
+}
 
-void* start(void* args) {
-    struct socketInfo* info =  (socketInfo*)(args);
-    int sock = *(info->clientSock);
-    Server* server = info->server;
-    server->setMClient(sock);
+void* Server::start() {
+    //struct SocketInfo* info = (SocketInfo*)(args);
+    //int sock = *(info->clientSock);
+   // Server* server = info->server;
+    //server->setMClient(sock);
         int option = 0;
         bool isEight = false;
         string input;
@@ -124,7 +128,7 @@ void* start(void* args) {
                 case 3:
                 case 4:
                 case 5:
-                    server->getCmds()[option-1]->execute();
+                    getCmds()[option-1]->execute();
                     break;
                 case 8:
                     isEight = true;
@@ -133,8 +137,8 @@ void* start(void* args) {
                     break;
             }
             if (!isEight) {
-                server->getSIO().write(server->sendMenu());
-                input = server->getSIO().read();
+                getSIO()->write(sendMenu());
+                input = getSIO()->read();
                 if (isNumber(input.c_str())) {
                     option = stoi(input);
                 } else {
@@ -142,7 +146,7 @@ void* start(void* args) {
                 }
             }
         }
-    close(sock);
+    close(m_client);
     pthread_exit(NULL);
 }
 
@@ -172,14 +176,10 @@ int Server::listenToNewConnections() {
             perror("error accepting connection");
             continue;
         }
-        getSIO().setMClient(clientSock);
+        getSIO()->setMClient(clientSock);
         pthread_t thread;
-        struct socketInfo args;
-        args.clientSock = new int;
-        args.clientSock = &clientSock;
-        args.server = new Server(0, 0);
-        args.server = this;
-        if(pthread_create(&thread, NULL, start, &args) != 0)
+        struct SocketInfo args = SocketInfo(&clientSock, this);
+        if(pthread_create(&thread, NULL, &Server::start_helper, this) != 0)
         {
             perror("Error creating thread");
             continue;
@@ -220,10 +220,9 @@ int Server :: closeServer() {
 
 string Server :: sendMenu() {
     string menu = "Welcome to the KNN Classifier Server. Please choose an option:\n";
-    int cmd_size = sizeof(cmd)/sizeof(cmd[0]);
-    for (int i = 0; i < cmd_size; i++) {
+    for (int i = 0; i < NUM_OF_CMDS; i++) {
         menu.append(std::to_string(i+1));
-        menu.append(" ");
+        menu.append(". ");
         menu.append(cmd[i][0].getDesc());
         menu.append("\n");
     }
@@ -255,7 +254,7 @@ int main(int argc, char *argv[]){
         server.setSockNum(sock);
         
         // Bind the socket to the specified m_port
-        server.getSIO().setMServer(server.getSockNum());
+        server.getSIO()->setMServer(server.getSockNum());
         int bindFlag = server.bindServer();
         //if the bind has failed
         if(bindFlag < 0)
@@ -272,7 +271,7 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-    SocketIO Server::getSIO() {
+    SocketIO* Server::getSIO() {
         return IO;
     }
     Command** Server::getCmds() {
