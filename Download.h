@@ -8,7 +8,7 @@
 using namespace std;
 class Download : public Command {
 public:
-    Download(string _desc, DefaultIO _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};  
+    Download(string _desc, DefaultIO* _dio, ShareData* _sd) : Command(std::move(_desc), _dio, _sd){};
     virtual void execute();
 };
 

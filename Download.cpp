@@ -29,5 +29,5 @@ void Download::execute() {
             }
         }
     }
-    getDio().write(output);
+    getDio()->write(output);
 }

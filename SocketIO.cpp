@@ -17,12 +17,21 @@ SocketIO::SocketIO(int server, int client) {
     m_client = client;
 }
 
+SocketIO::SocketIO() {
+    m_server = 0;
+    m_client = 0;
+}
+
 /**
  * getter for the id number of the server socket
  * @return int id socket
  */
 int SocketIO::getMServer() const {
     return m_server;
+}
+
+void SocketIO::setMServer(int server) {
+    m_server = server;
 }
 
 /**
@@ -33,13 +42,19 @@ int SocketIO::getMClient() const {
     return m_client;
 }
 
+void SocketIO::setMClient(int client) {
+    m_client = client;
+}
+
 /*
 * Function Name: read
 * Input: None
 * Output: string (the input from the user)
 * Function Operation: Gets input from the user and returns it.
 */
-    string SocketIO::read(){
+
+    string SocketIO::DefaultIO::read(){
+
         std::string message;
         char buffer[4096];
         int expected_data_len = sizeof(buffer);
@@ -75,7 +90,7 @@ int SocketIO::getMClient() const {
     * Output: none
     * Function Operation: Prints the string to output.
     */
-    void SocketIO::write(string output) {
+    void SocketIO::DefaultIO::write(string output) {
         output += '\n';
         send(m_client, output.c_str(), output.length(), 0);
     }

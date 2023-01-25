@@ -100,8 +100,6 @@ Client::Client(char* ip, string port) {
 
 }
 
-
-
 /**
  * receive massage from the server
  * @return string massage from the server
@@ -223,7 +221,6 @@ bool Client::upload(string path) {
         return false;
     }
     return true;
-
 }
 
 /**
@@ -265,7 +262,6 @@ void Client::download(string path) {
     } else{
         ::perror("couldn't open the file");
     }
-
 }
 
 /**

@@ -1,7 +1,7 @@
-all: a.out
+all: client.out server.out
 
-a.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o  StandardIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o CLI.o 
-	g++ -o a.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o KnnServer.o StandardIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o CLI.o -std=c++11
+server.out: CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o
+	g++ -pthread -o server.out CheckInput.o VectorCalDis.o KnnVec.o KnnDB.o SocketIO.o Command.o Classify.o Download.o Display.o Settings.o UploadC.o Server.o -std=c++11
 CheckInput.o: CheckInput.cpp
 	g++ -c -o CheckInput.o CheckInput.cpp -std=c++11
 VectorCalDis.o: VectorCalDis.cpp
@@ -10,10 +10,8 @@ KnnVec.o: KnnVec.cpp
 	g++ -c -o KnnVec.o KnnVec.cpp -std=c++11 
 KnnDB.o: KnnDB.cpp
 	g++ -c -o KnnDB.o KnnDB.cpp -std=c++11
-KnnServer.o: KnnServer.cpp
-	g++ -c -o KnnServer.o KnnServer.cpp -std=c++11
-mainServer.o: mainServer.cpp
-	g++ -c -o mainServer.o mainServer.cpp -std=c++11
+Server.o: Server.cpp
+	g++ -pthread -c -o Server.o Server.cpp -std=c++11
 Client.o: Client.cpp
 	g++ -c -o Client.o Client.cpp -std=c++11
 CLI.o: CLI.cpp
@@ -30,7 +28,7 @@ Settings.o: Settings.cpp
 	g++ -c -o Settings.o Settings.cpp -std=c++11
 UploadC.o: UploadC.cpp
 	g++ -c -o UploadC.o UploadC.cpp -std=c++11
-StandardIO.o: StandardIO.cpp
-	g++ -c -o StandardIO.o StandardIO.cpp -std=c++11
+SocketIO.o: SocketIO.cpp
+	g++ -c -o SocketIO.o SocketIO.cpp -std=c++11
 clean:
 	rm -f *.o *.out
