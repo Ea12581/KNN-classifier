@@ -14,7 +14,7 @@
 #include "Client.h"
 #include <regex.h>
 #include <cstring>
-
+#define BUFFER 50
 using namespace std;
 
 /*
@@ -101,61 +101,18 @@ Client::Client(char* ip, string port) {
 }
 
 /**
- * start conversation with the server and receive messages
- */
-void Client::start() {
-    char decision;
-    string input;
-    // Send a message to the server by the choose of the user
-    while (keepAlive) {
-        cout << receive();
-        cin >> decision;
-        input += decision;
-        //send the decsition to the server
-        sendToSer(input);
-        //clear the buffer
-        getline(std::cin, input);
-        input = "";
-        switch(decision){
-            case '1':
-                cout << receive();
-                //get path to classified vectors from user
-                getline(cin, input);
-                upload(input);
-                //next massage from server
-                cout << receive();
-                //get path to unclassified vectors
-                getline(cin, input);
-                upload(input);
-                input = "";
-                break;
-            case '5':
-                //get input from user
-                download("/home/oem/Documents/bar_ilan_courses/c++/ex4/write.txt");
-                input = "";
-                break;
-            case '8':
-                break;
-            default:
-                sendToSer();
-                break;
-        }
-        cout << receive();
-    }
-    close(m_socket);
-
-}
-
-/**
  * receive massage from the server
  * @return string massage from the server
  */
 string Client::receive() {
     // Wait for a response from the server
-    char buffer[4096];
-    int expected_data_len = sizeof(buffer);
+    char buffer[BUFFER];
+    int expected_data_len = BUFFER;
     int min_data_len = 2;
-    int read_bytes = recv(m_socket, buffer, expected_data_len, 0);
+    int read_bytes;
+    string massage;
+    //read while we can read from the socket
+    while((read_bytes = recv(m_socket, buffer, expected_data_len, 0)) > 0){
     if (read_bytes == 0) {
         // Connection closed by the server
         perror("Connection closed by the server");
@@ -167,15 +124,14 @@ string Client::receive() {
         close(m_socket);
         exit(1);
     }
-    string massage;
     // Append the data to the message
     massage.append(buffer, read_bytes);
-    // Check if the entire message has been received
-    if (read_bytes < min_data_len) {
-        perror("error: The entire message was not recived");
-        close(m_socket);
-        exit(1);
+        memset(buffer,0,BUFFER);
+    // Check if the buffer is not full, if so, go out
+    if (read_bytes < expected_data_len) {
+        break;
     }
+}
     return massage;
 }
 
@@ -185,7 +141,10 @@ string Client::receive() {
 void Client::sendToSer() {
     string userInput;
     getline(cin, userInput);
-    userInput += '@';
+    //if the user pressed enter, send new line
+    if(userInput.length() == 0){
+        userInput += "\n";
+    }
     const char* pInput = userInput.c_str();
     // Removes leading spaces
     userInput.erase(0, userInput.find_first_not_of(' '));
@@ -209,8 +168,6 @@ void Client::sendToSer() {
  * @param userInput string input from the user
  */
 void Client::sendToSer(string userInput){
-    //sign for end massage
-    userInput += '@';
     const char* pInput = userInput.c_str();
     // Removes leading spaces
     userInput.erase(0, userInput.find_first_not_of(' '));
@@ -226,26 +183,12 @@ void Client::sendToSer(string userInput){
 }
 
 /**
- * upload new unclassified vectors from a cvs file
+ * upload new unclassified vectors from a cvs file otherwise
+ * @return: true if the upload succeeded, false
  */
-void Client::upload(string path) {
+bool Client::upload(string path) {
     //stream pointer to the file
     ifstream fin;
-    //check if this is a cvs file
-    regex_t csv_regex;
-    //compile the expression \.csv$, every string that ends with '.cvs'
-    int ret = regcomp(&csv_regex, "\\.csv$", REG_EXTENDED);
-    if (ret != 0) {
-        printf("error compiling the regular expression\n");
-    }
-
-    ret = regexec(&csv_regex, path.c_str(), 0, NULL, 0);
-    if (ret != 0) {
-        // the regular expression does not match the input string
-        printf("This is not a csv file\n");
-    }
-
-    regfree(&csv_regex);
     // Open an existing file
     fin.open(path, ios::in);
     //check if the openning has succeeded
@@ -253,11 +196,14 @@ void Client::upload(string path) {
         // Read the Data from the file
         //line by line
         string line;
+        string vectors;
         // store it in a string variable 'line' and read it line by line
         while (getline(fin, line)) {
             //add /n
             line += '\n';
-            const char* pInput = line.c_str();
+            vectors += line;
+        }
+            const char* pInput = vectors.c_str();
             int data_len = strlen(pInput);
             int sent_bytes = send(m_socket, pInput, data_len, 0);
             if (sent_bytes < 0) {
@@ -266,24 +212,15 @@ void Client::upload(string path) {
                 close(m_socket);
                 exit(1);
             }
-
-        }
         fin.close();
-        line += '@';
-        const char* pInput = line.c_str();
-        int data_len = strlen(pInput);
-        int sent_bytes = send(m_socket, pInput, data_len, 0);
-        if (sent_bytes < 0) {
-            // Error
-            perror("error writing to m_socket");
-            close(m_socket);
-            exit(1);
         }
-        //if we couldn't open the file
-    } else{
-        sendToSer("error");
-    }
 
+        //if we couldn't open the file
+     else{
+        sendToSer("error");
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -292,21 +229,6 @@ void Client::upload(string path) {
 void Client::download(string path) {
     //stream pointer to the file
     ofstream fin;
-    //check if this is a cvs file
-    regex_t csv_regex;
-    //compile the expression \.txt$, every string that ends with '.txt'
-    int ret = regcomp(&csv_regex, "\\.txt$", REG_EXTENDED);
-    if (ret != 0) {
-        printf("error compiling the regular expression\n");
-    }
-
-    ret = regexec(&csv_regex, path.c_str(), 0, NULL, 0);
-    if (ret != 0) {
-        // the regular expression does not match the input string
-        printf("This is not a txt file\n");
-    }
-
-    regfree(&csv_regex);
     char buffer[4096];
     int expected_data_len = sizeof(buffer);
     int min_data_len = 2;
@@ -318,15 +240,9 @@ void Client::download(string path) {
         //line by line
         string line;
         // store it in the buffer and write it to the file
-        while (true) {
-            int read_bytes = recv(m_socket, buffer, expected_data_len, 0);
-            if (read_bytes == 0)
-            {
-                // Connection closed by the client
-                break;
-            }
-            else if (read_bytes < 0)
-            {
+        while (int read_bytes = recv(m_socket, buffer, expected_data_len, 0)) {
+
+            if (read_bytes < 0) {
                 // Error
                 perror("error reading from socket");
                 break;
@@ -346,8 +262,75 @@ void Client::download(string path) {
     } else{
         ::perror("couldn't open the file");
     }
+}
 
+/**
+ * up load classified and unclassified vectors from given files directories
+ */
+void Client::uploadDB(){
+    string input;
+    //get instructions from server
+    cout << receive();
+    //get path to classified vectors from user
+    getline(cin, input);
+    if(upload(input)){
+        //get confirm
+        cout << receive();
+        //get path to unclassified vectors
+        getline(cin, input);
+        upload(input);
+    }
+    //return to main
+}
 
+/**
+ * manage the choise of the user about the current k and metric
+ */
+void Client::chooseMetricK() {
+    //get the current metric and k
+    cout << receive();
+    //choose to change or not
+    sendToSer();
 }
 
 
+/**
+ * start conversation with the server and receive messages
+ */
+void Client::start() {
+    char decision;
+    string input;
+    // Send a message to the server by the choose of the user
+    while (keepAlive) {
+        //get the menu
+        cout << receive();
+        cin >> decision;
+        input = "";
+        input += decision;
+        //send the decsition to the server
+        sendToSer(input);
+        //clear the buffer
+        getline(std::cin, input);
+        input = "";
+        switch(decision){
+            case '1':
+                uploadDB();
+                break;
+            case '2':
+                chooseMetricK();
+                break;
+            case '5':
+                //get input from user
+                download("/home/oem/Documents/bar_ilan_courses/c++/ex4/write.txt");
+                input = "";
+                break;
+            case '8':
+                keepAlive = false;
+                break;
+            default:
+                break;
+        }
+    }
+    close(m_socket);
+
+}

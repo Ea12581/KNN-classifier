@@ -7,8 +7,8 @@
 
 using namespace std;
 
-bool isNumber(const char[]);
-bool isLegalPort(char[]);
+bool isNumber(char[]);
+bool isLegalPort(int);
 bool isLegalIp(string);
 
 #endif

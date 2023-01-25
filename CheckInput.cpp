@@ -15,9 +15,6 @@ using namespace std;
 */
 bool isNumber(const char input2[]) {
     int size = strlen(input2);
-    if (size == 0) {
-        return 0;
-    }
     for (int i = 0; i < size; i++) {
         if(!isdigit(input2[i])) {
             return 0;
@@ -32,9 +29,10 @@ bool isNumber(const char input2[]) {
 * Output: bool (true for legal, false for illegal port)
 * Function operation: Checks if the number can be used as a port, that he is in range of 1024-65535.
 */
-bool isLegalPort(char input2[]) {
-    int port = stoi(input2);
-    return (port >= 1024) && (port <= 65535);
+
+bool isLegalPort(int input2) {
+    return input2 >= 1024 && input2 <= 65535;
+
 }
 
 /*

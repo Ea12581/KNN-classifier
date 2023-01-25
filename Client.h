@@ -30,6 +30,10 @@ public:
 
     void download(string path);
 
-    void upload(string path);
+    bool upload(string path);
+
+    void uploadDB();
+
+    void chooseMetricK();
 };
 #endif //EX4_CLIENT_H

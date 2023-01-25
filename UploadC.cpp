@@ -6,8 +6,9 @@
 #include <iostream>
 #include <utility>
 #include <sstream>
+#include <cstring>
 #define DEFAULT_K 5
-#define DEFAULT_METRIC "AUC"
+#define DEFAULT_METRIC "EUC"
 
 
 
@@ -21,7 +22,7 @@ bool UploadC::uploadTest() {
     vector <VectorCalDis>* test;
     // Read the Data from the file
     string vectors = getDio()->read();
-    if(vectors != "error") {
+    if(::strcmp(vectors.c_str(),"error") != 0) {
         test = new vector <VectorCalDis>;
         // ss is an object of stringstream that references the S string.
         stringstream ss(vectors);
@@ -54,7 +55,6 @@ bool UploadC::uploadTest() {
         }
     } else{
 //if the path was not correct
-        getDio()->write("invalid input");
         return false;
     }
 //set the test file
@@ -73,7 +73,7 @@ bool UploadC::uploadTrain(){
     //create DB of vectors
     vector <KnnVec>* train;
     string vectors = getDio()->read();
-    if(vectors != "error"){
+    if(std::strcmp(vectors.c_str(),"error") != 0){
         train = new vector <KnnVec>;
         // ss is an object of stringstream that references the S string.
         stringstream ss(vectors);
@@ -92,7 +92,6 @@ bool UploadC::uploadTrain(){
     }
 //set the test file
         setMTrain(train);
-        getDio()->write("Upload complete");
         return true;
     }
 
@@ -108,7 +107,7 @@ getDio()->write("Please upload your local train CSV file.");
 if(uploadTrain()){
     //if the upload had successes
     //send the client
-    getDio()->write("Please upload your local test CSV file.");
+    getDio()->write("Upload complete\nPlease upload your local test CSV file.");
     //check if succeeded
     if(uploadTest()){
         getSd()->setK(DEFAULT_K);
@@ -118,6 +117,7 @@ if(uploadTrain()){
     //if the upload of the test file hasn't succeeded, set the other file as nullPtr to wipe it from the shared data
     this->getSd()->freeTestSafely();
 }
+    getDio()->write("invalid input");
 }
 
 /**
