@@ -16,8 +16,8 @@ public:
 
     SocketIO(int server, int client);
 
-    string read() override;
-    void write(string output) override;
+    string read();
+    void write(string output);
 
 };
 
