@@ -36,4 +36,9 @@ public:
 
 };
 
+struct socketInfo {
+    int* clientSock;
+    Server* sever;
+};
+
 #endif 

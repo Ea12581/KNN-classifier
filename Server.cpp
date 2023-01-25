@@ -9,6 +9,7 @@
 #include <string>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include "VectorCalDis.h"
 #include "KnnDB.h"
 #include "CheckInput.h"
@@ -19,6 +20,7 @@
 #include "Download.h"
 #include "Command.h"
 #include "Classify.h"
+#include "SocketIO.h"
 #define NUM_OF_CMDS 5
 
 
@@ -107,8 +109,10 @@ void Server::setPort(int port) {
 }
 
 
-void* start(void* clientSock, Server* server) {
-    int sock = *(int*)clientSock;
+void* start(void* args) {
+    struct socketInfo* info =  (socketInfo*)(args);
+    int sock = *(info->clientSock);
+    Server* server = info->sever;
     server->setMClient(sock);
         int option = 0;
         bool isEight = false;
@@ -170,8 +174,10 @@ int Server::listenToNewConnections() {
         }
         getSIO().setMClient(clientSock);
         pthread_t thread;
-        void* args = {&clientSock, this}
-        if(pthread_create(&thread, NULL, &start(void *), args) != 0)
+        struct socketInfo* args;
+        args->clientSock = &clientSock;
+        args->sever = this;
+        if(pthread_create(&thread, NULL, start, args) != 0)
         {
             perror("Error creating thread");
             continue;
@@ -247,7 +253,7 @@ int main(int argc, char *argv[]){
         server.setSockNum(sock);
         
         // Bind the socket to the specified m_port
-        server.getSIO().setMServer(server.getSockNum);
+        server.getSIO().setMServer(server.getSockNum());
         int bindFlag = server.bindServer();
         //if the bind has failed
         if(bindFlag < 0)
@@ -263,3 +269,10 @@ int main(int argc, char *argv[]){
     }
     return 0;
 }
+
+    SocketIO Server::getSIO() {
+        return IO;
+    }
+    Command** Server::getCmds() {
+        return cmd;
+    }
