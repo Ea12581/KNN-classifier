@@ -11,14 +11,11 @@ private:
     int m_server;
 public:
     int getMServer() const;
-
+    void setMServer(int);
     int getMClient() const;
-
+    void setMClient(int);
+    SocketIO();
     SocketIO(int server, int client);
-    string read();
-    void write(string output);
-
-
 };
 
 #endif
