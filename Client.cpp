@@ -371,11 +371,6 @@ int main(int argc, char *argv[]) {
         cout << "2rd input is not a legal port number!"<< endl;
         exit(1);
     }
-    // checks if the ip is legal
-    if (!isLegalIp(argv[1])) {
-        cout << "first input is not a legal ip!!"<< endl;
-        exit(1);
-    }
     Client c = Client(argv[1], argv[2]);
     c.start();
     return 0;
