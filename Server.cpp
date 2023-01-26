@@ -32,7 +32,7 @@
 Server::Server(int port, int sock) {
     m_port = port;
     m_sockNum = sock;
-    IO = new SocketIO(port, sock);   
+    IO = new SocketIO(sock);   
     setCmds();
 }
 
@@ -114,10 +114,6 @@ void* Server::start_helper(void* arg) {
 }
 
 void* Server::start() {
-    //struct SocketInfo* info = (SocketInfo*)(args);
-    //int sock = *(info->clientSock);
-   // Server* server = info->server;
-    //server->setMClient(sock);
         int option = 0;
         bool isEight = false;
         string input;
@@ -254,7 +250,6 @@ int main(int argc, char *argv[]){
         server.setSockNum(sock);
         
         // Bind the socket to the specified m_port
-        server.getSIO()->setMServer(server.getSockNum());
         int bindFlag = server.bindServer();
         //if the bind has failed
         if(bindFlag < 0)

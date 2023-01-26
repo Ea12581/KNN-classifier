@@ -28,12 +28,14 @@ public:
 
     void sendToSer(string userInput);
 
-    void download(string path);
+    void download();
 
     bool upload(string path);
 
     void uploadDB();
 
     void chooseMetricK();
+
+    void separetedDownload(string path);
 };
 #endif //EX4_CLIENT_H

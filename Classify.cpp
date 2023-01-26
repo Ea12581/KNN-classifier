@@ -2,7 +2,7 @@
 #include "Classify.h"
 #include "KnnDB.h"
 #define DEFAULT_K 5
-#define DEFAULT_METRIC "AUC"
+#define DEFAULT_METRIC "EUC"
 
 
 /*
@@ -58,9 +58,12 @@ void Classify::execute() {
     if (getSd()->getUnClassified() == nullptr) {
         output = "please upload data";
     } else {
-        KnnDB *temp = getSd()->getKnnDb();
         vector<KnnVec> *tempVec = new vector<KnnVec>;
-        *tempVec = temp->createDBFromValCalDis(*(getSd()->getUnClassified())); 
+        try{*tempVec = getSd()->getKnnDb()->createDBFromValCalDis(*(getSd()->getUnClassified()));}
+        catch (exception){
+            return;
+        }
+
         getSd()->setClassified(tempVec);
         output = "classifying data complete";
     }

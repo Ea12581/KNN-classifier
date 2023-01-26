@@ -13,15 +13,15 @@
 void Display::execute() {
     string output;
     if (!getSd()->isUnClaExists()) {
-        output = "please upload data";
+        output = "please upload data\n";
     } else if (!getSd()->isClassifiedExists()) {
-        output = "please classify the data";
+        output = "please classify the data\n";
     } else {
-        for (int i = 1; i <= getSd()->getClassified()->size(); i++) {
-            string index = to_string(i);
+        for (int i = 0; i < getSd()->getClassified()->size(); i++) {
+            string index = to_string(i + 1);
             output.append(index);
             output.append(" ");
-            output.append((*(getSd()->getClassified())).at(i-1).getClassification());
+            output.append((*(getSd()->getClassified())).at(i).getClassification());
             output.append("\n");
         }
         output.append("Done.");

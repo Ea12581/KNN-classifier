@@ -45,7 +45,6 @@ bool isNumber(const char input2[]) {
 * Output: bool (true for legal, false for illegal port)
 * Function operation: Checks if the number can be used as a port, that he is in range of 1024-65535.
 */
-
 bool isLegalPort(int input2) {
     return input2 >= 1024 && input2 <= 65535;
 
