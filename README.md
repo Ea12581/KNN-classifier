@@ -4,11 +4,11 @@ To compile: make
 
 to run: 
 
-In 1 terminal: ./server.out [the vectors file path] [a port]
+In 1 terminal: ./server.out [a port]
 
 In Another terminal: ./client.out [an ip] [a port]
 
-When running from the second terminal (the client side), he program expects an input from the user that includes a vector, a metrica and a number.
+When running from the second terminal (the client side), אhe program expects an input from the user that includes a vector, a metrica and a number.
 
 The file should have classified vectors in the format: num1, num2, ..., numN, classification.
 
