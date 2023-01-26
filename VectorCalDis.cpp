@@ -126,8 +126,9 @@ using namespace std;
                                      * vector.
                                     *example: 345532E-4, it's means we need to divide the value by 10^4
                                 */
-                                 if(line[j] == 'E' && j + 2 < line.size() && line[j + 1] == '-' &&
-                                 (isdigit(line[j + 2])) && line[j + 3] == ' '){
+                                    int lineLen = line.size();
+                                 if(line[j] == 'E' && j + 2 < lineLen && line[j + 1] == '-' &&
+                                 (isdigit(line[j + 2])) && (j + 3 == lineLen || line[j + 3] == ' ')){
                                      //convert to decimal value
                                      v.push_back(convertExp(line.substr(i, j + 3)));
                                      //if it's after a ., change back the flag
@@ -136,6 +137,9 @@ using namespace std;
                                      // Jumps to the next value.
                                      j += 4;
                                      i = j;
+                                     //it's was the last value
+                                     if (i > lineLen)
+                                         return v;
                                      // The '.' , '-' or 'E' are not legal.
                                  } else {
                                 return emptyV;

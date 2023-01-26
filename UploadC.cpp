@@ -28,8 +28,10 @@ bool UploadC::uploadTest() {
         stringstream ss(vectors);
         //line by line
         string line;
+        int i = 0;
         // store it in a string variable 'line'
         while (getline(ss, line, '\n')) {
+            i++;
             VectorCalDis v;
             string val;
             string newVec;
@@ -46,7 +48,7 @@ bool UploadC::uploadTest() {
             //cut the \r ending
             newVec.replace(newVec.length() - 2, 1, "");
             //check if we can create vector from the values
-            v = VectorCalDis::vectorFromString(newVec);
+            try{v = VectorCalDis::vectorFromString(newVec);} catch (exception e){cout << newVec;}
             //if we couldn't create vector from this record
             if (v.empty()) {
                 continue;
@@ -61,6 +63,8 @@ bool UploadC::uploadTest() {
     setMTest(test);
     //send the client
     getDio()->write("Upload complete");
+    //get finish massage from client
+    getDio()->read();
 return true;
 };
 

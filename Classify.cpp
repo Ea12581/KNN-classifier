@@ -68,4 +68,6 @@ void Classify::execute() {
         output = "classifying data complete";
     }
     getDio()->write(output);
+    //get finish massage
+    getDio()->read();
 }

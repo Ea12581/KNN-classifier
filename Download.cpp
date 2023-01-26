@@ -27,8 +27,7 @@ void Download::execute() {
                 output.append((*(getSd()->getClassified())).at(i).getClassification());
                 output.append("\n");
             }
-
-    
+            getDio()->write(output);
             //get finish massage
             getDio()->read();
     }

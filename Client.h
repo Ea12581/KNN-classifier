@@ -36,6 +36,6 @@ public:
 
     void chooseMetricK();
 
-    void separetedDownload(string path);
+    void separetedDownload(string path, string vectors);
 };
 #endif //EX4_CLIENT_H

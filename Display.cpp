@@ -27,5 +27,7 @@ void Display::execute() {
         output.append("Done.");
     }
     getDio()->write(output);
+    //get finish massage from client
+    getDio()->read();
 }
 
