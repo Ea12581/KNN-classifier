@@ -8,6 +8,7 @@
 #include <sstream>
 #include <regex>
 #include <math.h>
+#include <iostream>
 #include "VectorCalDis.h"
 
 using namespace std;
@@ -39,12 +40,18 @@ using namespace std;
      */
     double VectorCalDis::convertExp(string num){
         int length = num.length();
+        double exponent;
         //take the exponent
-        double exponent = stod(num.substr(length - 1, length - 1));
+        //check that the string does not finished with space
+        if(isdigit(num[length-1]))
+        exponent = stod(num.substr(length - 1, length - 1));
+        else
+            exponent = stod(num.substr(length - 2, length - 2));
         //take the value before the E
         num = num.substr(0, length - 3);
+        double val = 0;
         //convert to numeric and push to the vector
-        double val = stod(num);
+        try{val = stod(num);} catch (exception e){ cout << num;}
         val /= pow(10,exponent);
         return val;
     }
@@ -137,8 +144,8 @@ using namespace std;
                                      // Jumps to the next value.
                                      j += 4;
                                      i = j;
-                                     //it's was the last value
-                                     if (i > lineLen)
+                                     //it's was the last value and he has
+                                     if (i >= lineLen)
                                          return v;
                                      // The '.' , '-' or 'E' are not legal.
                                  } else {
