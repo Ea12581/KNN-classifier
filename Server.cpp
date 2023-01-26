@@ -133,6 +133,7 @@ void* Server::start() {
                     break;
             }
             if (!isEight) {
+                getCmds()[0]->getSd()->setK(dynamic_cast<Settings*>(getCmds()[1])->getK());
                 getSIO()->write(sendMenu());
                 input = getSIO()->read();
                 if (isNumber(input.c_str())) {
