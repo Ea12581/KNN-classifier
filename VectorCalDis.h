@@ -20,5 +20,6 @@ class VectorCalDis : public std::vector<double>{
         double manhattenDis(VectorCalDis&);
         bool didOverflow(double, double);
 
+    static double convertExp(std::string num);
 };
 #endif

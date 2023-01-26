@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <regex>
+#include <math.h>
 #include "VectorCalDis.h"
 
 using namespace std;
@@ -30,7 +31,23 @@ using namespace std;
         }
         return false;
     }
-    
+
+    /**
+     * take number with the pattern like 23564E-4 and convert to decimal value
+     * @param num represent by string
+     * @return his decimal value by double
+     */
+    double VectorCalDis::convertExp(string num){
+        int length = num.length();
+        //take the exponent
+        double exponent = stod(num.substr(length - 1, length - 1));
+        //take the value before the E
+        num = num.substr(0, length - 3);
+        //convert to numeric and push to the vector
+        double val = stod(num);
+        val /= pow(10,exponent);
+        return val;
+    }
     /*
     * Function Name: vectorFromString
     * Input: string line (a string from the user)
@@ -63,8 +80,8 @@ using namespace std;
                 i++;
                 continue;
             } else {
-                // only allows digits, '.' or '-'.
-                if(isdigit(line[i]) || line[i] == '-' || line[i] == '.') {
+                // only allows digits, '.','E' or '-'.
+                if(isdigit(line[i]) || line[i] == '-' || line[i] == '.' || line[i] == 'E') {
                     int j = i;
                     // goes over a potential double value.
                     while (line[j] != ' ' && j < line.size()) {
@@ -101,10 +118,28 @@ using namespace std;
                                     isdigit(line[j + 1])))  {
                                 // Found decimal point, stops counting
                                 flag = 1;
-                                j++; 
-                                // The '.' or '-' are not legal.
+                                j++;
                                 } else {
+                                    /*
+                                * 'E' can only be as:
+                                * With  - after it and a digit. after that would be a space, so we can add him to the
+                                     * vector.
+                                    *example: 345532E-4, it's means we need to divide the value by 10^4
+                                */
+                                 if(line[j] == 'E' && j + 2 < line.size() && line[j + 1] == '-' &&
+                                 (isdigit(line[j + 2])) && line[j + 3] == ' '){
+                                     //convert to decimal value
+                                     v.push_back(convertExp(line.substr(i, j + 3)));
+                                     //if it's after a ., change back the flag
+                                     if(flag == 1)
+                                         flag = 0;
+                                     // Jumps to the next value.
+                                     j += 4;
+                                     i = j;
+                                     // The '.' , '-' or 'E' are not legal.
+                                 } else {
                                 return emptyV;
+                                 }
                                 }
                             }
                         }
