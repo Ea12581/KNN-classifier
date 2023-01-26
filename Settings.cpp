@@ -65,6 +65,10 @@ void Settings::execute() {
         if (firstSpace == -1) {
             output = "invalid value for K\n";
             output.append("invalid value for metric");
+            getDio()->write(output);
+            //get finish massage from client
+            getDio()->read();
+            return;
         } else {
            char* k;
             char* metric;
@@ -74,16 +78,31 @@ void Settings::execute() {
             bool isKLegal = false;
             if (!isNumber(k)) {
                 output = "invalid value for K";
+                getDio()->write(output);
+                //get finish massage from client
+                getDio()->read();
+                return;
             } else {
                 isKLegal = true;
             }
             if ((strcmp(metric, "AUC")) && (strcmp(metric, "MAN")) && (strcmp(metric, "CHB")) && (strcmp(metric, "CAN")) &&
                 (strcmp(metric, "MIN"))) {
                 output = "invalid value for metric";
+                getDio()->write(output);
+                //get finish massage from client
+                getDio()->read();
+                return;
             } else {
                 if (isKLegal) {
                     setK(stoi(k));
                     setMetric(metric);
+                    output = "The current KNN parameters are: K = ";
+                    output.append(to_string(getK()));
+                    output.append(", distance metric = ");
+                    output.append(getMetric());
+                    getDio()->write(output);
+                    //get finish massage from client
+                    getDio()->read();
                 }
             }
         }

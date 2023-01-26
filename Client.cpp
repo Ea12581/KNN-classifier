@@ -18,39 +18,6 @@
 #define BUFFER 4096
 using namespace std;
 
-/*
-* Func name: main
-* Input: int argc (num of terminal inputs), char *argv[] (the file name and inputs)
-* Output: int
-* Function operation: Expects an IP and a port to connect to, creates a m_socket
-* for the connection, sends as a string vectors, a function to use and an int
-* so the server could classify the vector by it's knn. gets the classification
-* from the server and prints it, stops when it gets -1, of if the inputs are illegal
-* (or if an error occured).
-*/
-int main(int argc, char *argv[]) {
-    // should have 3 inputs, the out file, the ip and the port.
-    if (argc != 3) {
-        printf("Wrong number of arguments!\n");
-        exit(1);
-    }
-    // check if the port is number and legal port
-    if (!(isNumber(argv[2]) && isLegalPort(stoi(argv[2])))) {
-        cout << "2rd input is not a legal port number!"<< endl;
-        exit(1);
-    }
-    // checks if the ip is legal
-    if (!isLegalIp(argv[1])) {
-        cout << "first input is not a legal ip!!"<< endl;
-        exit(1);
-    }
-    Client c = Client(argv[1], argv[2]);
-    c.start();
-    return 0;
-}
-
-
-
 /**
  * getter for the m_socket number of the client
  * @return int number
@@ -125,6 +92,18 @@ void Client::start() {
                 break;
             case '2':
                 chooseMetricK();
+                break;
+            case '3':
+                //get confirm
+                cout << receive();
+                //send finish message
+                sendToSer("finish");
+                break;
+            case '4':
+                //get data
+                cout << receive();
+                //send finish message
+                sendToSer("finish");
                 break;
             case '5':
                 download();
@@ -273,8 +252,10 @@ bool Client::upload(string path) {
 void Client::download() {
     string path;
     getline(std::cin, path);
-    thread t(&Client::separetedDownload, this,path);
-    t.detach();
+    string vectors = receive();
+    //thread t(&Client::separetedDownload, this,path,vectors);
+    separetedDownload(path,vectors);
+    //t.detach();
     sendToSer("finish");
 }
 
@@ -293,6 +274,9 @@ void Client::uploadDB(){
         //get path to unclassified vectors
         getline(cin, input);
         upload(input);
+        //get confirm
+        cout << receive();
+        sendToSer("finish");
     }
     //return to main
 }
@@ -303,8 +287,20 @@ void Client::uploadDB(){
 void Client::chooseMetricK() {
     //get the current metric and k
     cout << receive();
+    string input;
     //choose to change or not
-    sendToSer();
+    getline(cin, input);
+    //decide not
+    if(input == ""){
+        sendToSer("\n");
+        return;
+    }
+    sendToSer(input);
+    //get the current metric and k
+    cout << receive();
+    //send finish
+    sendToSer("finish");
+
 }
 
 
@@ -312,15 +308,13 @@ void Client::chooseMetricK() {
  * download the file in another thread
  * @param path to the file we want to write in
  */
-void Client::separetedDownload(string path){
+void Client::separetedDownload(string path,string vectors){
     //stream pointer to the file
     ofstream fin;
     // Open an existing file
     fin.open(path, ios::out);
     //check if the openning has succeeded
     if(fin.is_open()) {
-        // Read the Data from the socket
-        string vectors = receive();
         string line;
         stringstream s(vectors);
         //line by line
@@ -342,4 +336,34 @@ void Client::separetedDownload(string path){
 
 }
 
+/*
+* Func name: main
+* Input: int argc (num of terminal inputs), char *argv[] (the file name and inputs)
+* Output: int
+* Function operation: Expects an IP and a port to connect to, creates a m_socket
+* for the connection, sends as a string vectors, a function to use and an int
+* so the server could classify the vector by it's knn. gets the classification
+* from the server and prints it, stops when it gets -1, of if the inputs are illegal
+* (or if an error occured).
+*/
 
+int main(int argc, char *argv[]) {
+    // should have 3 inputs, the out file, the ip and the port.
+    if (argc != 3) {
+        printf("Wrong number of arguments!\n");
+        exit(1);
+    }
+    // check if the port is number and legal port
+    if (!(isNumber(argv[2]) && isLegalPort(stoi(argv[2])))) {
+        cout << "2rd input is not a legal port number!"<< endl;
+        exit(1);
+    }
+    // checks if the ip is legal
+    if (!isLegalIp(argv[1])) {
+        cout << "first input is not a legal ip!!"<< endl;
+        exit(1);
+    }
+    Client c = Client(argv[1], argv[2]);
+    c.start();
+    return 0;
+}
