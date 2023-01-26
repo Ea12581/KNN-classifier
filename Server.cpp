@@ -174,7 +174,6 @@ int Server::listenToNewConnections() {
         }
         getSIO()->setMClient(clientSock);
         pthread_t thread;
-        struct SocketInfo args = SocketInfo(&clientSock, this);
         if(pthread_create(&thread, NULL, &Server::start_helper, this) != 0)
         {
             perror("Error creating thread");

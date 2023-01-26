@@ -37,10 +37,5 @@ public:
     static void* start_helper(void* arg);
 };
 
-struct SocketInfo {
-    int* clientSock;
-    Server* &server;
-    SocketInfo(int* client, Server* s) : clientSock(client), server(s) {}
-};
 
 #endif 
