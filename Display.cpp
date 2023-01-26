@@ -24,7 +24,7 @@ void Display::execute() {
             output.append((*(getSd()->getClassified())).at(i).getClassification());
             output.append("\n");
         }
-        output.append("Done.\n");
+        output.append("Done.");
     }
     getDio()->write(output);
 }

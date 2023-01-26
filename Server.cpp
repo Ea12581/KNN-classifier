@@ -32,7 +32,7 @@
 Server::Server(int port, int sock) {
     m_port = port;
     m_sockNum = sock;
-    IO = new SocketIO(port, sock);   
+    IO = new SocketIO(sock);   
     setCmds();
 }
 
@@ -250,7 +250,6 @@ int main(int argc, char *argv[]){
         server.setSockNum(sock);
         
         // Bind the socket to the specified m_port
-        server.getSIO()->setMServer(server.getSockNum());
         int bindFlag = server.bindServer();
         //if the bind has failed
         if(bindFlag < 0)

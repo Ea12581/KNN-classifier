@@ -17,22 +17,9 @@ SocketIO::SocketIO(int client) {
 }
 
 SocketIO::SocketIO() {
-    m_server = 0;
     m_client = 0;
 }
 
-/**
-
- * getter for the id number of the server socket
- * @return int id socket
- */
-int SocketIO::getMServer() const {
-    return m_server;
-}
-
-void SocketIO::setMServer(int server) {
-    m_server = server;
-}
 
 /**
 
@@ -64,7 +51,7 @@ void SocketIO::setMClient(int client) {
         while (true)
         {
 
-            int read_bytes = recv(m_client, buffer, expected_data_len, 0);
+            int read_bytes = recv(((SocketIO*)this)->getMClient(), buffer, expected_data_len, 0);
 
                 // Append the data to the message
                 message.append(buffer, read_bytes);
@@ -92,8 +79,8 @@ void SocketIO::setMClient(int client) {
     * Output: none
     * Function Operation: Prints the string to output.
     */
-    void SocketIO::write(string output) {
+    void SocketIO::DefaultIO::write(string output) {
         output += '\n';
-        send(m_client, output.c_str(), output.length(), 0);
+        send(((SocketIO*)this)->getMClient(), output.c_str(), output.length(), 0);
     }
 
