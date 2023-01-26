@@ -88,6 +88,5 @@ void Settings::execute() {
                 }
             }
         }
-        getDio()->write(output);
     }
 }
