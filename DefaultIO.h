@@ -7,6 +7,7 @@ class DefaultIO {
 public:
 
     virtual string read();
+
     virtual void write(string);
 
 };

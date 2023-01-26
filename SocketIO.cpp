@@ -12,8 +12,7 @@
 #include <string>
 #include "SocketIO.h"
 
-SocketIO::SocketIO(int server, int client) {
-    m_server = server;
+SocketIO::SocketIO(int client) {
     m_client = client;
 }
 
@@ -23,6 +22,7 @@ SocketIO::SocketIO() {
 }
 
 /**
+
  * getter for the id number of the server socket
  * @return int id socket
  */
@@ -35,6 +35,7 @@ void SocketIO::setMServer(int server) {
 }
 
 /**
+
  * getter socket of the client id socket
  * @return int id socket
  */
@@ -62,28 +63,24 @@ void SocketIO::setMClient(int client) {
         // Read data from the socket in chunks until the entire message has been received
         while (true)
         {
-            int read_bytes = recv(((SocketIO*)this)->getMClient(), buffer, expected_data_len, 0);
-            char* finish = strchr(buffer,'@');
-            //finish massage
-            if (finish != NULL){
-                //remove @
-                *finish = '\0';
+
+            int read_bytes = recv(m_client, buffer, expected_data_len, 0);
 
                 // Append the data to the message
                 message.append(buffer, read_bytes);
                 // Connection closed by the client
-                break;
-            }
-            else if (read_bytes < 0)
+
+            if (read_bytes < 0)
             {
                 // Error
                 perror("error reading from socket");
                 break;
             }
-
-            // Append the data to the message
-            message.append(buffer, read_bytes);
-
+            //if the buffer is not full, we read everything from the client
+            if(read_bytes < expected_data_len)
+                break;
+            //clear the buffer
+            memset(buffer,0,expected_data_len);
         }
 
         return message;
@@ -95,8 +92,8 @@ void SocketIO::setMClient(int client) {
     * Output: none
     * Function Operation: Prints the string to output.
     */
-    void SocketIO::DefaultIO::write(string output) {
+    void SocketIO::write(string output) {
         output += '\n';
-        send(((SocketIO*)this)->getMClient(), output.c_str(), output.length(), 0);
+        send(m_client, output.c_str(), output.length(), 0);
     }
 

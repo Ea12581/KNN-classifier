@@ -8,7 +8,6 @@ using namespace std;
 class SocketIO : public DefaultIO {
 private:
     int m_client;
-    int m_server;
 public:
     int getMServer() const;
     void setMServer(int);

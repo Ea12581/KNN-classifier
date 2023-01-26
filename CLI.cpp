@@ -60,7 +60,7 @@ public:
                 continue;
             }
             ShareData *sd = new ShareData();
-            SocketIO tempIO = SocketIO(sock,clientSock);
+            SocketIO tempIO = SocketIO(clientSock);
             DefaultIO* IO = &tempIO;
             UploadC upload = UploadC("upload an unclassified csv data file", IO, sd);
             Settings settings = Settings("algorithm settings", IO, sd);
@@ -96,7 +96,7 @@ public:
                     }
                 }
             }
-            close(clientSock);
+           // close(clientSock);
         }
     }
 };

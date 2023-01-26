@@ -14,7 +14,8 @@
 #include "Client.h"
 #include <regex.h>
 #include <cstring>
-#define BUFFER 50
+#include <thread>
+#define BUFFER 4096
 using namespace std;
 
 /*
@@ -101,6 +102,47 @@ Client::Client(char* ip, string port) {
 }
 
 /**
+ * start conversation with the server and receive messages
+ */
+void Client::start() {
+    char decision;
+    string input;
+    // Send a message to the server by the choose of the user
+    while (keepAlive) {
+        //get the menu
+        cout << receive();
+        cin >> decision;
+        input = "";
+        input += decision;
+        //send the decsition to the server
+        sendToSer(input);
+        //clear the buffer
+        getline(std::cin, input);
+        input = "";
+        switch(decision){
+            case '1':
+                uploadDB();
+                break;
+            case '2':
+                chooseMetricK();
+                break;
+            case '5':
+                download();
+                //get input from user
+                input = "";
+                break;
+            case '8':
+                keepAlive = false;
+                break;
+            default:
+                break;
+        }
+    }
+    close(m_socket);
+
+}
+
+/**
  * receive massage from the server
  * @return string massage from the server
  */
@@ -180,6 +222,7 @@ void Client::sendToSer(string userInput){
         exit(1);
     }
 
+
 }
 
 /**
@@ -221,47 +264,18 @@ bool Client::upload(string path) {
         return false;
     }
     return true;
+
 }
 
 /**
  * download the results of classifying the vectors which we have loaded earlier
  */
-void Client::download(string path) {
-    //stream pointer to the file
-    ofstream fin;
-    char buffer[4096];
-    int expected_data_len = sizeof(buffer);
-    int min_data_len = 2;
-    // Open an existing file
-    fin.open(path, ios::out);
-    //check if the openning has succeeded
-    if(fin.is_open()) {
-        // Read the Data from the socket
-        //line by line
-        string line;
-        // store it in the buffer and write it to the file
-        while (int read_bytes = recv(m_socket, buffer, expected_data_len, 0)) {
-
-            if (read_bytes < 0) {
-                // Error
-                perror("error reading from socket");
-                break;
-            }
-
-            // Append the data to the message
-            fin << buffer;
-            // Check if the entire message has been received
-            if (read_bytes < expected_data_len){
-                perror("error: The entire message was not received");
-                break;
-            }
-
-        }
-        fin.close();
-        //if we couldn't open the file
-    } else{
-        ::perror("couldn't open the file");
-    }
+void Client::download() {
+    string path;
+    getline(std::cin, path);
+    thread t(&Client::separetedDownload, this,path);
+    t.detach();
+    sendToSer("finish");
 }
 
 /**
@@ -295,42 +309,37 @@ void Client::chooseMetricK() {
 
 
 /**
- * start conversation with the server and receive messages
+ * download the file in another thread
+ * @param path to the file we want to write in
  */
-void Client::start() {
-    char decision;
-    string input;
-    // Send a message to the server by the choose of the user
-    while (keepAlive) {
-        //get the menu
-        cout << receive();
-        cin >> decision;
-        input = "";
-        input += decision;
-        //send the decsition to the server
-        sendToSer(input);
-        //clear the buffer
-        getline(std::cin, input);
-        input = "";
-        switch(decision){
-            case '1':
-                uploadDB();
-                break;
-            case '2':
-                chooseMetricK();
-                break;
-            case '5':
-                //get input from user
-                download("/home/oem/Documents/bar_ilan_courses/c++/ex4/write.txt");
-                input = "";
-                break;
-            case '8':
-                keepAlive = false;
-                break;
-            default:
-                break;
+void Client::separetedDownload(string path){
+    //stream pointer to the file
+    ofstream fin;
+    // Open an existing file
+    fin.open(path, ios::out);
+    //check if the openning has succeeded
+    if(fin.is_open()) {
+        // Read the Data from the socket
+        string vectors = receive();
+        string line;
+        stringstream s(vectors);
+        //line by line
+        // store it in a string variable 'line' and read it line by line
+        while (getline(s,line,'\n')) {
+            //add /n
+            line += '\n';
+            fin << line;
         }
+
+        fin.close();
     }
-    close(m_socket);
+        //if we couldn't open the file
+    else{
+        cout << "invalid path" << endl;
+        //throw the output from server
+        receive();
+    }
 
 }
+
+

@@ -351,8 +351,14 @@ double KnnDB::cmpByClass(const pair<string, double> p1, const pair<string, doubl
  */
 vector<KnnVec> KnnDB::createDBFromValCalDis(vector<VectorCalDis> db) {
     vector<KnnVec> knnVectors;
-    for(auto v : db){
-        knnVectors.push_back(KnnVec::convertToKnn(findClassification(v),v));
+    for(const auto& v : db){
+        //find his most k closes knn vectors
+        vector<pair<string, double>> knnPairs = findKnn(v);
+        //find his classification
+        string clas = mostPrevalentCls(knnPairs);
+        //create new knn vector
+        KnnVec newV = KnnVec::convertToKnn(clas,v);
+        knnVectors.push_back(newV);
     }
     return knnVectors;
 }
