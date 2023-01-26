@@ -84,10 +84,6 @@ void Settings::execute() {
                 if (isKLegal) {
                     setK(stoi(k));
                     setMetric(metric);
-                    output = "The current KNN parameters are: K = ";
-                    output.append(to_string(getK()));
-                    output.append(", distance metric = ");
-                    output.append(getMetric());
                 }
             }
         }

@@ -45,7 +45,6 @@ public:
             perror("error binding socket to m_port");
             exit(1);
         }
-
         while (true) {
             // Listen for incoming connections
             if (listen(sock, 5) < 0) {
@@ -60,7 +59,6 @@ public:
                 perror("error accepting connection");
                 continue;
             }
-
             ShareData *sd = new ShareData();
             SocketIO tempIO = SocketIO(clientSock);
             DefaultIO* IO = &tempIO;

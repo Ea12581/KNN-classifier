@@ -37,10 +37,4 @@ void Download::execute() {
             //get finish massage
             getDio()->read();
     }
-
-    /*if (!file) {
-        output = "couldn't create the file!\n";
-    } else {
-        file << output;
-    }/*/
 }

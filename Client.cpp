@@ -222,6 +222,7 @@ void Client::sendToSer(string userInput){
         exit(1);
     }
 
+
 }
 
 /**
@@ -305,6 +306,7 @@ void Client::chooseMetricK() {
     //choose to change or not
     sendToSer();
 }
+
 
 /**
  * download the file in another thread
