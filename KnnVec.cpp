@@ -47,7 +47,7 @@ void KnnVec :: initializeFromAnotherVec(vector<double> v){
 */
 bool KnnVec :: is_number(const std::string& s){
     //return true only if s not contains characrters that not numeric (- and . allowed)
-    return(strspn( s.c_str(), "-.0123456789" ) == s.size() );
+    return(strspn( s.c_str(), "-.0123456789E" ) == s.size() );
 }
 
 
