@@ -122,6 +122,8 @@ if(uploadTrain()){
     this->getSd()->freeTestSafely();
 }
     getDio()->write("invalid input");
+//get "finish" massage from client
+    getDio()->read();
 }
 
 /**

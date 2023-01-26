@@ -16,9 +16,16 @@ void Download::execute() {
     string output;
     if (!getSd()->isUnClaExists()) {
         output = "please upload data\n";
+        getDio()->write(output);
+        //get finish massage
+        getDio()->read();
     } else if (!getSd()->isClassifiedExists()) {
         output = "please classify the data\n";
+        getDio()->write(output);
+        //get finish massage
+        getDio()->read();
     } else {
+        getDio()->write("we have data");
         int length = getSd()->getClassified()->size();
             for (int i = 0; i < length; i++) {
                 string index = to_string(i + 1);
