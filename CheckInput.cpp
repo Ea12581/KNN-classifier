@@ -49,34 +49,3 @@ bool isLegalPort(int input2) {
     return input2 >= 1024 && input2 <= 65535;
 
 }
-
-/*
-* Function Name: isLegalIp
-* Input: string input1
-* Output: bool (true for legal, false for illegal ip)
-* Function operation: Checks if the string is in a legal ip format.
-*/
-bool isLegalIp(string input1) {
-    regex_t ip_format;
-    int reti;
-    char msgbuf[100];
-
-    /* Compile regular expression of ip address*/
-    reti = regcomp(&ip_format, "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$", REG_EXTENDED);
-    if (reti) {
-        fprintf(stderr, "Could not compile regex\n");
-        exit(1);
-    }
-
-    /* Execute regular expression */
-    reti = regexec(&ip_format, input1.c_str(), 0, NULL, 0);
-    if (!reti) {
-        return true;
-    } else if (reti == REG_NOMATCH) {
-        return false;
-    } else {
-        regerror(reti, &ip_format, msgbuf, sizeof(msgbuf));
-        fprintf(stderr, "Regex match failed: %s\n", msgbuf);
-        exit(1);
-    }
-}
