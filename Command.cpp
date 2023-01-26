@@ -183,7 +183,7 @@ void ShareData::freeTestSafely() {
 /*
  * constructor with description and dio arguments
  */
-Command::Command(string _desc, DefaultIO _dio, ShareData* _sd) {
+Command::Command(string _desc, DefaultIO *_dio, ShareData* _sd) {
     desc = std::move(_desc);
     dio = _dio;
     sd = _sd;
@@ -202,7 +202,7 @@ void Command::setDesc(string _desc) {
  * set the dio
  * @param _dio
  */
-void Command::setDio(DefaultIO _dio) {
+void Command::setDio(DefaultIO* _dio) {
     dio = _dio;
 }
 
@@ -217,7 +217,7 @@ string Command::getDesc() {
  * get the dio
  * @return
  */
-DefaultIO Command::getDio() {
+DefaultIO* Command::getDio() {
     return dio;
 }
 

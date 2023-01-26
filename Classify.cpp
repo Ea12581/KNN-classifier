@@ -64,5 +64,5 @@ void Classify::execute() {
         getSd()->setClassified(tempVec);
         output = "classifying data complete";
     }
-    getDio().write(output);
+    getDio()->write(output);
 }
