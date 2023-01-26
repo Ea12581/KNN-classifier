@@ -7,6 +7,21 @@
 
 using namespace std;
 
+/*
+* Function Name: isNumber
+* Input: char input1[] (an array of characters)
+* Output: bool (true for a number, false otherwise)
+* Function operation: Checks if a string is a positive number.
+*/
+bool isNumber(char input2[]) {
+    int size = strlen(input2);
+    for (int i = 0; i < size; i++) {
+        if(!isdigit(input2[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 /*
 * Function Name: isNumber
@@ -54,7 +69,7 @@ bool isLegalIp(string input1) {
     }
 
     /* Execute regular expression */
-    reti = regexec(&ip_format, input1, 0, NULL, 0);
+    reti = regexec(&ip_format, input1.c_str(), 0, NULL, 0);
     if (!reti) {
         return true;
     } else if (reti == REG_NOMATCH) {
