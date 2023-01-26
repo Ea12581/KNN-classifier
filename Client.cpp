@@ -250,12 +250,19 @@ bool Client::upload(string path) {
  * download the results of classifying the vectors which we have loaded earlier
  */
 void Client::download() {
+    string output =  receive();
+    //check if there is data
+    if(output != "we have data\n") {
+        cout << output;
+        sendToSer("finish");
+        return;
+    }
     string path;
     getline(std::cin, path);
     string vectors = receive();
-    //thread t(&Client::separetedDownload, this,path,vectors);
-    separetedDownload(path,vectors);
-    //t.detach();
+    thread t(&Client::separetedDownload, this,path,vectors);
+    //separetedDownload(path,vectors);
+    t.detach();
     sendToSer("finish");
 }
 
@@ -273,11 +280,17 @@ void Client::uploadDB(){
         cout << receive();
         //get path to unclassified vectors
         getline(cin, input);
-        upload(input);
-        //get confirm
-        cout << receive();
-        sendToSer("finish");
+        if(upload(input)){
+            //get confirm
+            cout << receive();
+            sendToSer("finish");
+            return;
+        }
+
     }
+    //get invalid massage
+    cout << receive();
+    sendToSer("finish");
     //return to main
 }
 

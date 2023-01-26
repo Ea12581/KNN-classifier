@@ -21,6 +21,8 @@
 #include "Command.h"
 #include "Classify.h"
 #include "SocketIO.h"
+#include "CLI.h"
+
 #define NUM_OF_CMDS 5
 
 
@@ -32,8 +34,6 @@
 Server::Server(int port, int sock) {
     m_port = port;
     m_sockNum = sock;
-    IO = new SocketIO(sock);   
-    setCmds();
 }
 
 /**
@@ -44,16 +44,6 @@ Server::~Server() {
     //if the closing or the shutdown went wrong
     if(flag < 0)
         exit(1);
-}
-
-void Server::setCmds() {
-        ShareData *sd = new ShareData();
-        cmd = new Command*[NUM_OF_CMDS];
-        cmd[0] = new UploadC("upload an unclassified csv data file", IO, sd);
-        cmd[1] = new Settings("algorithm settings", IO, sd);
-        cmd[2] = new Classify("classify data", IO, sd);
-        cmd[3] = new Display("display results", IO, sd);
-        cmd[4] = new Download("download results", IO, sd);
 }
 
 /**
@@ -107,45 +97,6 @@ void Server::setPort(int port) {
     Server::m_port = port;
 }
 
-void* Server::start_helper(void* arg) {
-    Server* self = static_cast<Server*>(arg);
-    self->start();
-    return NULL;
-}
-
-void* Server::start() {
-        int option = 0;
-        bool isEight = false;
-        string input;
-        while (!isEight) {
-            switch (option) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    getCmds()[option-1]->execute();
-                    break;
-                case 8:
-                    isEight = true;
-                    break;
-                default:
-                    break;
-            }
-            if (!isEight) {
-                getCmds()[0]->getSd()->setK(dynamic_cast<Settings*>(getCmds()[1])->getK());
-                getSIO()->write(sendMenu());
-                input = getSIO()->read();
-                if (isNumber(input.c_str())) {
-                    option = stoi(input);
-                } else {
-                    option = 0;
-                }
-            }
-        }
-    close(m_client);
-    pthread_exit(NULL);
-}
 
 /**
  * wait and listen to new clients that want to connect the server, return -1 if don't succeed in listening
@@ -173,9 +124,10 @@ int Server::listenToNewConnections() {
             perror("error accepting connection");
             continue;
         }
-        getSIO()->setMClient(clientSock);
+        SocketIO* ID = new SocketIO(clientSock);
+        CLI* newClient = new CLI(ID);
         pthread_t thread;
-        if(pthread_create(&thread, NULL, &Server::start_helper, this) != 0)
+        if(pthread_create(&thread, NULL, &CLI::start_helper, newClient) != 0)
         {
             perror("Error creating thread");
             continue;
@@ -184,14 +136,6 @@ int Server::listenToNewConnections() {
     return 0;
 }
 
-
-int Server::getMClient() const {
-    return m_client;
-}
-
-void Server::setMClient(int mClient) {
-    m_client = mClient;
-}
 
 /**
  * safe closing the server. return 1 if succeed, -1 if not
@@ -212,18 +156,6 @@ int Server :: closeServer() {
         return flag;
     }
     return 0;
-}
-
-string Server :: sendMenu() {
-    string menu = "Welcome to the KNN Classifier Server. Please choose an option:\n";
-    for (int i = 0; i < NUM_OF_CMDS; i++) {
-        menu.append(std::to_string(i+1));
-        menu.append(". ");
-        menu.append(cmd[i][0].getDesc());
-        menu.append("\n");
-    }
-    menu.append("8. exit");
-    return menu;
 }
 
 
@@ -266,10 +198,3 @@ int main(int argc, char *argv[]){
     }
     return 0;
 }
-
-    SocketIO* Server::getSIO() {
-        return IO;
-    }
-    Command** Server::getCmds() {
-        return cmd;
-    }

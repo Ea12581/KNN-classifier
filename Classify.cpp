@@ -55,7 +55,7 @@ void Classify::setMetric(string _metric) {
 */
 void Classify::execute() {
     string output;
-    if (getSd()->getUnClassified() == nullptr) {
+    if (getSd()->getKnnDb() == nullptr  || getSd()->getUnClassified() == nullptr) {
         output = "please upload data";
     } else {
         vector<KnnVec> *tempVec = new vector<KnnVec>;
