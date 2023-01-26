@@ -84,8 +84,10 @@ void Settings::execute() {
                 if (isKLegal) {
                     setK(stoi(k));
                     setMetric(metric);
+                    return;
                 }
             }
         }
+        getDio()->write(output);
     }
 }
