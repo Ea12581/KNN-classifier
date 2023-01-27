@@ -49,4 +49,9 @@ if the client enters 8, it will disconnect and stop.
 
 The communication between the client and the server is through a TCP socket.
 
+The server creates a new thread for each client.
+
+The client downloads and creates the file in option 5 in a new thread.
+
 If at some point the input is not as expected, or if an error occore, should print a message.
+
