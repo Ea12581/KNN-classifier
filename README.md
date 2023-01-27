@@ -1,5 +1,4 @@
-# Advanced-Programing-Project-Part-2
-
+# Advanced-Programing-Project-Part-3
 To compile: make
 
 to run: 
@@ -8,13 +7,15 @@ In 1 terminal: ./server.out [a port]
 
 In Another terminal: ./client.out [an ip] [a port]
 
-When running from the second terminal (the client side), אhe program expects an input from the user that includes a vector, a metrica and a number.
+The server waits for clients to connect.
 
-The file should have classified vectors in the format: num1, num2, ..., numN, classification.
+When a client connects, the server sends a menu with 5 options and an option to exit.
 
-The program will calculate the distances of the given vector to all of the vectors from the file the server got, and the server will find the k vectors that are the closes to it according to the metricas.
+Option 1: the serrver asks the client to upload a file with classified vectors and a file with an unclassified vectors.
 
-The classification that will be the most prevelant among those k vectors, will be the given vector's classification.
+The file should of the classified vectors should be in the format: num1, num2, ..., numN, classification, while the unclassified doesn't have classification.
+
+Option 2: the server print's the current K and metric in order to classify vectors later. if the client presses enter. returns to the menu. else, they can enter input in the next format "[k] [metric]" in order to update the current K and metric value.
 
 The metricas are:
 
@@ -34,10 +35,18 @@ For P = 2 Euclidean will use Manhatten distance.
 
 If when calculating the distance there is an overflow, prints a message.
 
-The server will send the classification back to the client and it will be printed on the client side, and wait for more inputs.
+Option 3: the server will classify the unclassified vectors according to the k and the metric and the classified vectors, and will hold their data.
 
-if the client enters -1, it will stop sending inputs.
+The classification works like this: for each vector of the unclassified vectors The program will calculate the distances of the given vector to all of the vectors from the classified file the server got, and the server will find the k vectors that are the closes to it according to the metricas.
+
+The classification that will be the most prevelant among those k vectors, will be the given vector's classification.
+
+Option 4: The server will send the client a list of the classifications (of the unclassified vectors after being classified) and the client will print them.
+
+Option 5: The server will send the client a list of the classifications (of the unclassified vectors after being classified) and the client will save them in a file.
+
+if the client enters 8, it will disconnect and stop.
 
 The communication between the client and the server is through a TCP socket.
 
-If at some point the input is not as expected, or if an error occore, should print a message and stop.
+If at some point the input is not as expected, or if an error occore, should print a message.
