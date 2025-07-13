@@ -1,4 +1,4 @@
-# Advanced-Programing-Project-Part-3
+# KNN clasifier
 To compile: make
 
 to run: 
